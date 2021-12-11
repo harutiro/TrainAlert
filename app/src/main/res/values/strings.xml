@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TrainAlert</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_map">マップ</string>
+    <string name="title_route">ルート</string>
+    <string name="title_setting">設定</string>
 </resources>

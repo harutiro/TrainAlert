@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_map">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="app.makino.harutiro.trainalert.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_map"
+        android:name="app.makino.harutiro.trainalert.ui.map.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="app.makino.harutiro.trainalert.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_route"
+        android:name="app.makino.harutiro.trainalert.ui.route.RouteFragment"
+        android:label="@string/title_route"
+        tools:layout="@layout/fragment_route" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="app.makino.harutiro.trainalert.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_setting"
+        android:name="app.makino.harutiro.trainalert.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>
