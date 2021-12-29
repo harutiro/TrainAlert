@@ -33,9 +33,9 @@
                 android:text="まであと"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toStartOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/text_dest" />
+                app:layout_constraintBottom_toBottomOf="@+id/mapTravelTimeTextView"
+                app:layout_constraintEnd_toStartOf="@+id/mapTravelTimeTextView"
+                app:layout_constraintStart_toEndOf="@+id/mapDestinationTextView" />
 
             <TextView
                 android:id="@+id/text_home3"
@@ -44,25 +44,25 @@
                 android:text="分"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintBottom_toBottomOf="@+id/mapTravelTimeTextView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView" />
+                app:layout_constraintStart_toEndOf="@+id/mapTravelTimeTextView" />
 
             <TextView
-                android:id="@+id/text_dest"
+                android:id="@+id/mapDestinationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="目的地"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintBottom_toBottomOf="@+id/mapTravelTimeTextView"
                 app:layout_constraintEnd_toStartOf="@+id/text_home2"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/mapTravelTimeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -79,5 +79,14 @@
 
 
     </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mapRouteRV"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

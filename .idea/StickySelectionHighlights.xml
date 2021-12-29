@@ -48,11 +48,6 @@
             <PaintGroupHighlightMap />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/ui/route/RouteFragment.kt">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/ui/setting/SettingFragment.kt">
           <value>
             <PaintGroupHighlightMap />
@@ -79,11 +74,6 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_home.xml">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_map.xml">
           <value>
             <PaintGroupHighlightMap />
           </value>
