@@ -16,25 +16,25 @@
         android:clickable="true"
         android:contentDescription="add"
         android:focusable="true"
-        app:layout_anchor="@id/bottom_sheet"
-        app:layout_anchorGravity="top|end"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        tools:context=".MainActivity"/>
+        tools:context=".MainActivity">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="600dp"
         android:background="@drawable/shape_rounded_corners_10dp"
         android:backgroundTint="@color/white"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:behavior_peekHeight="110dp"
+        app:behavior_peekHeight="600dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:context=".BottomSheetFragment">
 
@@ -74,8 +74,9 @@
             android:id="@+id/switch2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:minHeight="48dp"
-            android:thumb="@drawable/false_bell"
+            android:thumb="@drawable/switch_layout"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toStartOf="@+id/imageButton2"
             app:layout_constraintTop_toTopOf="@+id/imageView2"
@@ -95,6 +96,17 @@
             app:layout_constraintTop_toTopOf="@+id/imageView2"
             app:srcCompat="@drawable/delete_black_24dp"
             tools:ignore="SpeakableTextPresentCheck" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/toggle_layout"
+            android:textIsSelectable="false"
+            android:textOff="月"
+            android:textOn="月"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

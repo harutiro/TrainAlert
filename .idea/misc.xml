@@ -6,13 +6,17 @@
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable-v24/shape_rounded_corners_10dp.xml" value="0.465625" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/check_black_24dp.xml" value="0.465625" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/delete_black_24dp.xml" value="0.465625" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/empty.xml" value="0.23425925925925925" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/group_6.xml" value="0.465625" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/ic_baseline_arrow_drop_down_circle_24.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/more_vert_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/notifications_black_24dp.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/switch_layout.xml" value="0.17685185185185184" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/tint__1_.xml" value="0.19444444444444445" />
-        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_edit.xml" value="0.67" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/toggle.xml" value="0.45092592592592595" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/toggle_layout.xml" value="0.29814814814814816" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_edit.xml" value="0.37944162436548223" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/fragment_dashboard.xml" value="0.1334853090172239" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/fragment_home.xml" value="0.1334853090172239" />
