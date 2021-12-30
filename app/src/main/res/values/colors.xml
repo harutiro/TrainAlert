@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="themeColor">#81aba8</color>
+    <color name="themeColor_Light">#b1ddd9</color>
+
+    <color name="textBlock">#3C3C58</color>
+    <color name="textGray">#A1A1B0</color>
+    <color name="textLightGray">#7B7B7B</color>
+
+    <color name="background">#F4F4F4</color>
+    <color name="border">#DBDBDB</color>
+    <color name="error">#D84646</color>
 </resources>
