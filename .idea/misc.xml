@@ -12,7 +12,7 @@
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/more_vert_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/notifications_black_24dp.xml" value="0.19907407407407407" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/tint__1_.xml" value="0.19444444444444445" />
-        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_edit.xml" value="0.2957427536231884" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_edit.xml" value="0.67" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/fragment_dashboard.xml" value="0.1334853090172239" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/fragment_home.xml" value="0.1334853090172239" />
@@ -22,6 +22,7 @@
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/fragment_setting.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/item_course_map_date.xml" value="0.7796852646638054" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/layout/item_course_route_date.xml" value="0.536" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/menu/bottom_nav_menu.xml" value="0.44256410256410256" />
       </map>
     </option>
   </component>
