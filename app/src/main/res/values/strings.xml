@@ -3,4 +3,5 @@
     <string name="title_map">マップ</string>
     <string name="title_route">ルート</string>
     <string name="title_setting">設定</string>
+    <string name="google_places_api_key">AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g</string>
 </resources>
