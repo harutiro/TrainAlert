@@ -26,6 +26,12 @@
         android:background="@color/background"
         tools:context=".MainActivity">
 
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mapFragment"
+            android:name="com.google.android.gms.maps.MapFragment"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

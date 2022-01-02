@@ -10,7 +10,6 @@ import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
@@ -19,10 +18,10 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-
+//        val mapFragment =
+//            childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
+//        mapFragment.getMapAsync(this)
+//
         startActivity(Intent(context,EditActivity::class.java))
 
     }

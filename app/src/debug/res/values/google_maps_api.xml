@@ -1,0 +1,24 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=A3:7E:A9:FE:33:24:88:8A:6A:EA:2C:5D:64:9E:97:58:D4:A9:07:7F%3Bapp.makino.harutiro.trainalert
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    app.makino.harutiro.trainalert
+
+    SHA-1 certificate fingerprint:
+    A3:7E:A9:FE:33:24:88:8A:6A:EA:2C:5D:64:9E:97:58:D4:A9:07:7F
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g</string>
+</resources>
