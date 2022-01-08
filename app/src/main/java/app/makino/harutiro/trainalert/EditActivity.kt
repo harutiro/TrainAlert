@@ -55,6 +55,28 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
 
+
+        // Initialize the AutocompleteSupportFragment.
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
+                    as AutocompleteSupportFragment
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG))
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                // TODO: Get info about the selected place.
+                Log.d("debug", "Place: ${place.name}, ${place.id} ,${place.address},${place.latLng}")
+            }
+
+            override fun onError(status: Status) {
+                // TODO: Handle the error.
+                Log.d("debug", "An error occurred: $status")
+            }
+        })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
