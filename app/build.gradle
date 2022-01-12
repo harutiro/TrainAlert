@@ -64,5 +64,7 @@ dependencies {
 
 //    map
     implementation 'com.google.android.libraries.places:places:2.5.0'
+    implementation 'com.google.maps:google-maps-services:1.0.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
 
 }
