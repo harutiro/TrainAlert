@@ -50,29 +50,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
 
-        val placesClient = Places.createClient(this)
-
-        // Define a Place ID.
-        val placeId = "EicxMyBNYXJrZXQgU3QsIFdpbG1pbmd0b24sIE5DIDI4NDAxLCBVU0EiGhIYChQKEgnRTo6ixx-qiRHo_bbmkCm7ZRAN"
-
-// Specify the fields to return.
-        val placeFields = listOf(Place.Field.ID, Place.Field.NAME)
-
-// Construct a request object, passing the place ID and fields array.
-        val request = FetchPlaceRequest.newInstance(placeId, placeFields)
-
-        placesClient.fetchPlace(request)
-            .addOnSuccessListener { response: FetchPlaceResponse ->
-                val place = response.place
-                Log.d("debug", "Place found: ${place.name}")
-            }.addOnFailureListener { exception: Exception ->
-                if (exception is ApiException) {
-                    Log.d("debug", "Place not found: ${exception.message}")
-                    val statusCode = exception.statusCode
-                }
-            }
-
-
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
@@ -93,41 +70,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.d("debug", "An error occurred: $status")
             }
         })
-
-
-
-        //情報取得を別のスレッドでおこなうようにする
-        runBlocking(Dispatchers.IO){
-            runCatching {
-                val client: OkHttpClient = OkHttpClient().newBuilder()
-                    .build()
-                val requests: Request = Request.Builder()
-                    .url("https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyCWlZTj9siY9TFizSf06yrt55FaDmIZLjc")
-                    .method("GET", null)
-                    .build()
-                val response: Response = client.newCall(requests).execute()
-                Log.d("debug",response.toString())
-            }
-        }.onSuccess{
-
-        }.onFailure {
-            //失敗した時のところ。
-            Toast.makeText(this,"失敗",Toast.LENGTH_LONG).show()
-        }
-
-
-        val context = GeoApiContext.Builder()
-            .apiKey("AIzaSyCWlZTj9siY9TFizSf06yrt55FaDmIZLjc")
-            .build()
-        val results = DirectionsApi.newRequest(context)
-            .origin("愛知御津駅")
-            .destination("豊橋駅")
-            .mode(TravelMode.DRIVING)
-            .await()
-
-        val gson = GsonBuilder().setPrettyPrinting().create()
-        Log.d("debug2", "====================================================")
-        Log.d("debug2", gson.toJson(results))
 
 //        context.shutdown()
 
