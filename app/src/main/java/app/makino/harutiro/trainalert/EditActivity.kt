@@ -125,6 +125,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             .mode(TravelMode.DRIVING)
             .await()
 
+
         val gson = GsonBuilder().setPrettyPrinting().create()
         Log.d("debug2", "====================================================")
         Log.d("debug2", gson.toJson(results))
