@@ -63,7 +63,7 @@
         android:backgroundTint="@color/white"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:behavior_peekHeight="100dp"
+        app:behavior_peekHeight="110"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:context=".BottomSheetFragment">
 
@@ -78,6 +78,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <EditText
+            android:id="@+id/editRouteName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="ルート名"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/editIcon"
+            app:layout_constraintEnd_toStartOf="@+id/editSwichi"
+            app:layout_constraintStart_toEndOf="@+id/editIcon"
+            app:layout_constraintTop_toTopOf="@+id/editIcon" />
+
         <ImageView
             android:id="@+id/editIcon"
             android:layout_width="75dp"
@@ -87,17 +103,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view3"
             app:srcCompat="@drawable/ic_launcher_foreground" />
-
-        <TextView
-            android:id="@+id/editName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="大学"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/editIcon"
-            app:layout_constraintStart_toEndOf="@+id/editIcon"
-            app:layout_constraintTop_toTopOf="@+id/editIcon" />
 
         <Switch
             android:id="@+id/editSwichi"
