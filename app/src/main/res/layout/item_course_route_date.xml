@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:minHeight="48dp"
-        android:thumb="@drawable/false_bell"
+        android:thumb="@drawable/switch_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemRouteRemoveButton"
         app:layout_constraintTop_toTopOf="parent"
