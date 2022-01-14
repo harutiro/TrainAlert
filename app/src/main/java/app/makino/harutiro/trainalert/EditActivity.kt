@@ -4,6 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
+import app.makino.harutiro.trainalert.dateBase.RouteDateClass
+import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.common.api.Status
@@ -11,7 +16,8 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-
+import io.realm.Realm
+import java.util.*
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
@@ -20,6 +26,14 @@ import kotlin.math.sin
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
     val tag = "debag"
+    var adapter: EditRecycleViewAdapter? = null
+
+//    データ受け渡し
+    var id: String? = ""
+
+    private val realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +45,11 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         var lat02 = 0.0
         var lon02 = 0.0
 
+        if(id == ""){
 
+        }else{
+
+        }
 
 
         Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
@@ -86,17 +104,33 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
-//        context.shutdown()
+
+
+//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
+        val rView = findViewById<RecyclerView>(R.id.editRV)
+        adapter = EditRecycleViewAdapter(this , object: EditRecycleViewAdapter.OnItemClickListner{})
+        rView.layoutManager = LinearLayoutManager(this)
+        rView.adapter = adapter
+        if(id == ""){
+            adapter?.setList(
+                listOf<RouteListDateClass>(
+                    RouteListDateClass(start = true),
+                    RouteListDateClass(end = true)
+                )
+            )
+        }else{
+            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
+            adapter?.setList(realmResalt?.routeList!!)
+        }
+
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-
-    }
-
-    override fun onMapReady(p0: GoogleMap) {
 
     }
 
