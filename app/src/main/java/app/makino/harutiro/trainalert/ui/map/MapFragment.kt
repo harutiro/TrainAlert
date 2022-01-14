@@ -10,6 +10,21 @@ import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import android.view.InflateException
+import androidx.lifecycle.Transformations.map
+
+import android.content.DialogInterface
+import androidx.fragment.app.FragmentManager
+import com.google.android.gms.maps.CameraUpdateFactory
+
+import com.google.android.gms.maps.model.MarkerOptions
+
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.common.io.Files.map
+
+
+
+
 
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
@@ -23,6 +38,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 //        mapFragment.getMapAsync(this)
 //
 
+
+
     }
 
     override fun onCreateView(
@@ -31,6 +48,17 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     ): View? {
 
         return inflater.inflate(R.layout.fragment_map, container, false)
+
+    }
+
+
+    override fun onDestroyView(){
+        super.onDestroyView()
+
+//        TODO:二重でマップフラグメントが呼ばれるのが原因っぽい　対策まだ
+        val f = fragmentManager?.findFragmentById(R.id.mapFragment) as MapFragment?
+        if (f != null) requireFragmentManager().beginTransaction().remove(f).commit()
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
