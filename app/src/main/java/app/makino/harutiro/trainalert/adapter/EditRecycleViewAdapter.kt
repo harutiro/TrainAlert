@@ -55,6 +55,7 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
         holder.itemEditRouteEditText.setText(item.placeName)
         holder.itemEditAlarmTimeEditText.setText(item.alertTime)
 
+//       　ルートの棒の部分の表示切り替え
         if (position == 0){
             holder.itemEditTopLineView.visibility = INVISIBLE
         }
@@ -63,6 +64,7 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
             holder.itemEditAddButton.visibility = INVISIBLE
         }
 
+//        項目追加部分
         holder.itemEditAddButton.setOnClickListener {
             items.add(position+1,RouteListDateClass())
             notifyItemInserted(position+1)
