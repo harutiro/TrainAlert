@@ -22,7 +22,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 //            childFragmentManager.findFragmentById(R.id.mapMapView) as SupportMapFragment
 //        mapFragment.getMapAsync(this)
 //
-        startActivity(Intent(context,EditActivity::class.java))
 
     }
 
