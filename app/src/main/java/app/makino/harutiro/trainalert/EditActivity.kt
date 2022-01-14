@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.Switch
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
@@ -16,6 +19,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.realm.Realm
 import java.util.*
 import kotlin.math.acos
@@ -45,10 +49,34 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         var lat02 = 0.0
         var lon02 = 0.0
 
-        if(id == ""){
+        findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener{
+            realm.executeTransaction{
+                val new = if(id == null){
+                    it.createObject(RouteDateClass::class.java,UUID.randomUUID().toString())
+                }else{
+                    it.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
+                }
 
-        }else{
+                new?.timeAllDayCheck = findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked
+                new?.timeDeparture = findViewById<EditText>(R.id.editDepartureEditText).text.toString()
+                new?.timeArriva = findViewById<EditText>(R.id.editArrivalEditText).text.toString()
+                new?.weekEveryDay = findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked
+                new?.weekMon = findViewById<CheckBox>(R.id.editMondayButton).isChecked
+                new?.weekTue = findViewById<CheckBox>(R.id.editThursdayButton).isChecked
+                new?.weekWed = findViewById<CheckBox>(R.id.editWednesdayButton).isChecked
+                new?.weekThe = findViewById<CheckBox>(R.id.editThursdayButton).isChecked
+                new?.weekFri = findViewById<CheckBox>(R.id.editFridayButton).isChecked
+                new?.weekSat = findViewById<CheckBox>(R.id.editSaturdayButton).isChecked
+                new?.weekSun = findViewById<CheckBox>(R.id.editSundayButton).isChecked
 
+                new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
+                new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
+
+                new?.routeList?.addAll(adapter?.getList()!!)
+
+
+
+            }
         }
 
 

@@ -63,7 +63,7 @@
         android:backgroundTint="@color/white"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:behavior_peekHeight="110"
+        app:behavior_peekHeight="110dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:context=".BottomSheetFragment">
 

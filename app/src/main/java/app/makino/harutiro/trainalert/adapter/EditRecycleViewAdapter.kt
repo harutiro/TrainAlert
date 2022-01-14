@@ -90,4 +90,8 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
         items.addAll(list)
         notifyDataSetChanged()
     }
+
+    fun getList(): List<RouteListDateClass>{
+        return items
+    }
 }
