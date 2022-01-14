@@ -60,6 +60,11 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
         if (item.end){
             holder.itemEditButtomLineView.visibility = INVISIBLE
         }
+
+        holder.itemEditAddButton.setOnClickListener {
+            items.add(RouteListDateClass())
+            reView()
+        }
     }
 
     //リストの要素数を返すメソッド
