@@ -3,11 +3,6 @@
   <component name="StickySelectionHighlights">
     <option name="editorHighlights">
       <map>
-        <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/adapter/RouteRecycleViewAdapter.kt">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/ui/dashboard/DashboardFragment.kt">
           <value>
             <PaintGroupHighlightMap />

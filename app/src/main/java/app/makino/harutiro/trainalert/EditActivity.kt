@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Switch
+import android.widget.ToggleButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
@@ -51,7 +52,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener{
             realm.executeTransaction{
-                val new = if(id == null){
+                val new = if(id.isNullOrEmpty()){
                     it.createObject(RouteDateClass::class.java,UUID.randomUUID().toString())
                 }else{
                     it.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
@@ -61,13 +62,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 new?.timeDeparture = findViewById<EditText>(R.id.editDepartureEditText).text.toString()
                 new?.timeArriva = findViewById<EditText>(R.id.editArrivalEditText).text.toString()
                 new?.weekEveryDay = findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked
-                new?.weekMon = findViewById<CheckBox>(R.id.editMondayButton).isChecked
-                new?.weekTue = findViewById<CheckBox>(R.id.editThursdayButton).isChecked
-                new?.weekWed = findViewById<CheckBox>(R.id.editWednesdayButton).isChecked
-                new?.weekThe = findViewById<CheckBox>(R.id.editThursdayButton).isChecked
-                new?.weekFri = findViewById<CheckBox>(R.id.editFridayButton).isChecked
-                new?.weekSat = findViewById<CheckBox>(R.id.editSaturdayButton).isChecked
-                new?.weekSun = findViewById<CheckBox>(R.id.editSundayButton).isChecked
+                new?.weekMon = findViewById<ToggleButton>(R.id.editMondayButton).isChecked
+                new?.weekTue = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
+                new?.weekWed = findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked
+                new?.weekThe = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
+                new?.weekFri = findViewById<ToggleButton>(R.id.editFridayButton).isChecked
+                new?.weekSat = findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked
+                new?.weekSun = findViewById<ToggleButton>(R.id.editSundayButton).isChecked
 
                 new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
                 new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
