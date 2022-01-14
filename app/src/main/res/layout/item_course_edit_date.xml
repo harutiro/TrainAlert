@@ -75,7 +75,7 @@
         android:paddingTop="2dp"
         android:paddingRight="4dp"
         android:paddingBottom="2dp"
-        android:text="＋手動追加"
+        android:text="＋追加"
         android:textColor="@color/textBlock"
         app:layout_constraintStart_toStartOf="@+id/itemEditRouteEditText"
         app:layout_constraintTop_toBottomOf="@+id/itemEditRouteEditText" />
