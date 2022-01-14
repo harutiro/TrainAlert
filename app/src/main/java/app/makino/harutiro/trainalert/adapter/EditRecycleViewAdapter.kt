@@ -60,6 +60,7 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
         }
         if (position == items.size-1){
             holder.itemEditButtomLineView.visibility = INVISIBLE
+            holder.itemEditAddButton.visibility = INVISIBLE
         }
 
         holder.itemEditAddButton.setOnClickListener {
