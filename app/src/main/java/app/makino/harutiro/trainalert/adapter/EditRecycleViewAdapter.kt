@@ -24,6 +24,7 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
 
     //リサイクラービューに表示するリストを宣言する
     val items: MutableList<RouteListDateClass> = mutableListOf()
+    val itemsCopy: MutableList<RouteListDateClass> = mutableListOf()
 
     //データをcourseDateと結びつける？？
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -54,22 +55,21 @@ class EditRecycleViewAdapter(private val context: Context,private val listener: 
         holder.itemEditRouteEditText.setText(item.placeName)
         holder.itemEditAlarmTimeEditText.setText(item.alertTime)
 
-        if (item.start){
+        if (position == 0){
             holder.itemEditTopLineView.visibility = INVISIBLE
         }
-        if (item.end){
+        if (position == items.size-1){
             holder.itemEditButtomLineView.visibility = INVISIBLE
         }
 
         holder.itemEditAddButton.setOnClickListener {
-            items.add(RouteListDateClass())
-            reView()
+            items.add(position+1,RouteListDateClass())
+            notifyItemInserted(position+1)
         }
     }
 
     //リストの要素数を返すメソッド
     override fun getItemCount(): Int {
-
         return items.size
     }
 
