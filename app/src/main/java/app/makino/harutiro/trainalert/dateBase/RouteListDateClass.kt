@@ -14,6 +14,6 @@ open class RouteListDateClass(
     open var placeLon:Double = 0.0,
     open var start:Boolean = false,
     open var end:Boolean = false,
-    open var alertTime:String = ""
+    open var alertTime:String = "5分前"
 
 ): RealmObject()
