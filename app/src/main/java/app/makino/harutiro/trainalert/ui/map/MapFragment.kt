@@ -36,76 +36,12 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        //        デフォルトのやつ
-//        binding = ActivityMapsBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//        ＝＝＝＝＝＝＝マップ関係の試行錯誤部分
 //        val mapFragment = getSupportFragmentManager()
 //            .findFragmentById(R.id.mapFragment) as SupportMapFragment
 //        mapFragment.getMapAsync(this)
 
-//        val mapFragment =
-//            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
-                // Got last known location. In some rare situations this can be null.
-                Log.d("debug","❤❤❤❤💝💫☮")
-                Log.d("debug",location.toString())
-            }
-
-        val locationRequest = LocationRequest.create()?.apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-
-        val client: SettingsClient = LocationServices.getSettingsClient(requireActivity())
-        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
-
-        task.addOnSuccessListener { locationSettingsResponse ->
-            // All location settings are satisfied. The client can initialize
-            // location requests here.
-            // ...
-        }
-
-        task.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException){
-                // Location settings are not satisfied, but this can be fixed
-                // by showing the user a dialog.
-                try {
-                    // Show the dialog by calling startResolutionForResult(),
-                    // and check the result in onActivityResult().
-                    exception.startResolutionForResult(requireActivity(),
-                        100)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
-                }
-            }
-        }
 
 
 
@@ -136,26 +72,12 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     }
 
 
-//    private fun stopLocationUpdates() {
-//        fusedLocationClient.removeLocationUpdates(locationCallback)
-//    }
-//
-//
-//
-//
-//    override fun onPause() {
-//        super.onPause()
-//        stopLocationUpdates()
-//    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_map, container, false)
-
     }
 
 
