@@ -45,9 +45,9 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 //            .findFragmentById(R.id.mapFragment) as SupportMapFragment
 //        mapFragment.getMapAsync(this)
 
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+//        val mapFragment =
+//            childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+//        mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 

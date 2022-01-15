@@ -78,6 +78,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
             }
+
+            finish()
         }
 
 

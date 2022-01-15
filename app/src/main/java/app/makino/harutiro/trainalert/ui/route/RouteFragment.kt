@@ -21,6 +21,12 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         Realm.getDefaultInstance()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        adapter?.setList(realm.where(RouteDateClass::class.java).findAll())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,4 +46,5 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         adapter?.setList(realmResalt)
 
     }
+
 }
