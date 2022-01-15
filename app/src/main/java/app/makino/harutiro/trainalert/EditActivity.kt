@@ -13,11 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.common.api.Status
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,6 +59,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         var lat02 = 0.0
         var lon02 = 0.0
 
+
+//        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
         findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener{
             realm.executeTransaction{
                 val new = if(id.isNullOrEmpty()){
@@ -85,55 +96,114 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
 
-        // Initialize the AutocompleteSupportFragment.
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
 
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG ,Place.Field.TYPES))
+        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // and once again when the user makes a selection (for example when calling fetchPlace()).
+        val token = AutocompleteSessionToken.newInstance()
 
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                // TODO: Get info about the selected place.
-                Log.d("debug", "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}")
-                lat01 = place.latLng.latitude
-                lon01 = place.latLng.longitude
+        // Create a RectangularBounds object.
+        val bounds = RectangularBounds.newInstance(
+            LatLng(-33.880490, 151.184363),
+            LatLng(-33.858754, 151.229596)
+        )
+        // Use the builder to create a FindAutocompletePredictionsRequest.
+        val request =
+            FindAutocompletePredictionsRequest.builder()
+                // Call either setLocationBias() OR setLocationRestriction().
+//                .setLocationBias(bounds)
+                //.setLocationRestriction(bounds)
+//                .setOrigin(LatLng(-33.8749937, 151.2041382))
+                .setCountries("JP")
+                .setTypeFilter(TypeFilter.ADDRESS)
+                .setSessionToken(token)
+                .setQuery("名古屋駅")
+                .build()
 
+        val placesClient = Places.createClient(this)
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+                for (prediction in response.autocompletePredictions) {
+                    Log.i("debag", prediction.placeId)
+                    Log.i("debag", prediction.getPrimaryText(null).toString())
+
+
+                    val placeFields = listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG ,Place.Field.TYPES)
+
+                    // Construct a request object, passing the place ID and fields array.
+                    val request1 = FetchPlaceRequest.newInstance(prediction.placeId, placeFields)
+
+                    val placesClient = Places.createClient(this)
+                    placesClient.fetchPlace(request1)
+                        .addOnSuccessListener { response: FetchPlaceResponse ->
+                            val place = response.place
+                            Log.d("debag", "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}")
+                        }.addOnFailureListener { exception: Exception ->
+                            if (exception is ApiException) {
+                                Log.d("debag", "Place not found: ${exception.message}")
+                                val statusCode = exception.statusCode
+                            }
+                        }
+
+
+                }
+            }.addOnFailureListener { exception: Exception? ->
+                if (exception is ApiException) {
+                    Log.e("debug", "Place not found: " + exception.statusCode)
+                }
             }
 
-            override fun onError(status: Status) {
-                // TODO: Handle the error.
-                Log.d("debug", "An error occurred: $status")
-            }
-        })
 
-        // Initialize the AutocompleteSupportFragment.
-        val autocompleteFragment2 =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment2)
-                    as AutocompleteSupportFragment
 
-        // Specify the types of place data to return.
-        autocompleteFragment2.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG ,Place.Field.TYPES))
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment2.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                // TODO: Get info about the selected place.
-                Log.d("debug", "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}")
-                lat02 = place.latLng.latitude
-                lon02 = place.latLng.longitude
-
-                val distance = getDistance(lat01, lon01, lat02, lon02, 'K')
-                Log.d("debug",distance.toString())
-            }
-
-            override fun onError(status: Status) {
-                // TODO: Handle the error.
-                Log.d("debug", "An error occurred: $status")
-            }
-        })
+//        // Initialize the AutocompleteSupportFragment.
+//        val autocompleteFragment =
+//            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
+//                    as AutocompleteSupportFragment
+//
+//        // Specify the types of place data to return.
+//        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG ,Place.Field.TYPES))
+//
+//        // Set up a PlaceSelectionListener to handle the response.
+//        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+//            override fun onPlaceSelected(place: Place) {
+//                // TODO: Get info about the selected place.
+//                Log.d("debug", "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}")
+//                lat01 = place.latLng.latitude
+//                lon01 = place.latLng.longitude
+//
+//            }
+//
+//            override fun onError(status: Status) {
+//                // TODO: Handle the error.
+//                Log.d("debug", "An error occurred: $status")
+//            }
+//        })
+//
+//        // Initialize the AutocompleteSupportFragment.
+//        val autocompleteFragment2 =
+//            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment2)
+//                    as AutocompleteSupportFragment
+//
+//        // Specify the types of place data to return.
+//        autocompleteFragment2.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME ,Place.Field.ADDRESS ,Place.Field.LAT_LNG ,Place.Field.TYPES))
+//
+//        // Set up a PlaceSelectionListener to handle the response.
+//        autocompleteFragment2.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+//            override fun onPlaceSelected(place: Place) {
+//                // TODO: Get info about the selected place.
+//                Log.d("debug", "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}")
+//                lat02 = place.latLng.latitude
+//                lon02 = place.latLng.longitude
+//
+//                val distance = getDistance(lat01, lon01, lat02, lon02, 'K')
+//                Log.d("debug",distance.toString())
+//            }
+//
+//            override fun onError(status: Status) {
+//                // TODO: Handle the error.
+//                Log.d("debug", "An error occurred: $status")
+//            }
+//        })
+//
 
 
 
