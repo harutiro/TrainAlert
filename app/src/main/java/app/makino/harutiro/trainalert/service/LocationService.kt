@@ -35,7 +35,7 @@ class LocationService : Service() {
                 p0 ?: return
                 for (location in p0.locations){
                     updatedCount++
-                    Log.d("debug", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
+                    Log.d("debag2", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
                 }
             }
         }
