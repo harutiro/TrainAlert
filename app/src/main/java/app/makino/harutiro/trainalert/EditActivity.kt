@@ -4,37 +4,34 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Switch
-import android.widget.ToggleButton
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.view.View.GONE
+import android.widget.*
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.common.api.Status
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.realm.Realm
 import java.util.*
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
+import android.widget.LinearLayout
+import android.view.ViewGroup
+
+
+
 
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -58,6 +55,28 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         var lon01 = 0.0
         var lat02 = 0.0
         var lon02 = 0.0
+
+//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リニアレイアウトの追加部分
+        val editAddRouteLiniurLayout = findViewById<LinearLayout>(R.id.editAddRouteLinearLayout)
+
+        if(id == ""){
+
+            val newRoute =listOf<RouteListDateClass>(
+                RouteListDateClass(start = true),
+                RouteListDateClass(end = true)
+            )
+
+            for (i in newRoute){
+
+                addNewRouteItem(editAddRouteLiniurLayout,i,null)
+
+            }
+
+
+        }else{
+            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
+            adapter?.setList(realmResalt?.routeList!!)
+        }
 
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
@@ -146,23 +165,51 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
-        val rView = findViewById<RecyclerView>(R.id.editRV)
-        adapter = EditRecycleViewAdapter(this , object: EditRecycleViewAdapter.OnItemClickListner{})
-        rView.layoutManager = LinearLayoutManager(this)
-        rView.adapter = adapter
-        if(id == ""){
-            adapter?.setList(
-                listOf<RouteListDateClass>(
-                    RouteListDateClass(start = true),
-                    RouteListDateClass(end = true)
-                )
-            )
-        }else{
-            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
-            adapter?.setList(realmResalt?.routeList!!)
+////       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
+//        val rView = findViewById<RecyclerView>(R.id.editRV)
+//        adapter = EditRecycleViewAdapter(this , object: EditRecycleViewAdapter.OnItemClickListner{})
+//        rView.layoutManager = LinearLayoutManager(this)
+//        rView.adapter = adapter
+//        if(id == ""){
+//            adapter?.setList(
+//                listOf<RouteListDateClass>(
+//                    RouteListDateClass(start = true),
+//                    RouteListDateClass(end = true)
+//                )
+//            )
+//        }else{
+//            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
+//            adapter?.setList(realmResalt?.routeList!!)
+//        }
+
+    }
+
+    fun addNewRouteItem(editAddRouteLiniurLayout: LinearLayout, i: RouteListDateClass?, index:Int? ){
+//        val imageButtonId = ArrayList<Int>()
+//        imageButtonId.add(ViewCompat.generateViewId())
+
+        val v: View = layoutInflater.inflate(R.layout.item_course_edit_date, null)
+//        v.id = imageButtonId.last()
+
+        v.findViewById<Button>(R.id.itemEditAddButton).setOnClickListener(){
+            addNewRouteItem(editAddRouteLiniurLayout, null, (v.parent as ViewGroup).indexOfChild(v)+1)
+
         }
 
+        if(i?.start == true){
+            v.findViewById<View>(R.id.itemEditTopLineView).visibility = GONE
+        }
+        if(i?.end == true){
+            v.findViewById<View>(R.id.itemEditButtomLineView).visibility = GONE
+            v.findViewById<Button>(R.id.itemEditAddButton).visibility = GONE
+        }
+
+
+        if (index != null) {
+            editAddRouteLiniurLayout.addView(v,index)
+        }else{
+            editAddRouteLiniurLayout.addView(v)
+        }
     }
 
     override fun onMapReady(p0: GoogleMap) {
