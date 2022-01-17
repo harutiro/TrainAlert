@@ -63,7 +63,7 @@
         android:backgroundTint="@color/white"
         android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:behavior_peekHeight="110dp"
+        app:behavior_peekHeight="600dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:context=".BottomSheetFragment">
 
@@ -211,17 +211,6 @@
                     app:layout_constraintStart_toEndOf="@+id/editMondayButton"
                     app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/editRV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editAllDayCheckBox">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
                 <Button
                     android:id="@+id/editSearchButton"
                     android:layout_width="wrap_content"
@@ -232,7 +221,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editRV" />
+                    app:layout_constraintTop_toBottomOf="@+id/editAddRouteLinearLayout" />
 
                 <TextView
                     android:id="@+id/textView4"
@@ -323,6 +312,14 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/editSaturdayButton"
                     app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <LinearLayout
+                    android:id="@+id/editAddRouteLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/editAllDayCheckBox"></LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
