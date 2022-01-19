@@ -2,6 +2,7 @@ package app.makino.harutiro.trainalert.ui.route
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +44,17 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
 
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
+        for(i in realmResalt){
+            Log.d("debag3",i.routeName)
+            if(i.routeList !=null ){
+                for(j in i.routeList!!){
+                    Log.d("debag3",j.placeName)
+
+                }
+            }
+
+
+        }
         adapter?.setList(realmResalt)
 
     }

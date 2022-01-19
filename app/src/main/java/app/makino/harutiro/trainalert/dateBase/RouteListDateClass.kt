@@ -6,6 +6,7 @@ import java.util.*
 
 open class RouteListDateClass(
     @PrimaryKey open var id: String? = UUID.randomUUID().toString(),
+    open var placeLovalLanguageName:String="",
     open var placeName: String = "",
     open var placeId: String = "",
     open var placeType:String = "",
