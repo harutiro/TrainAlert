@@ -1,12 +1,16 @@
 package app.makino.harutiro.trainalert.service
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
+import android.content.Context
 import android.content.Intent
-import android.os.IBinder
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.media.AudioManager
+import android.net.Uri
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -19,6 +23,16 @@ import io.realm.Realm
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
+import android.app.NotificationManager
+import android.media.AudioAttributes
+import app.makino.harutiro.trainalert.EditActivity
+import okhttp3.internal.notify
+import android.content.BroadcastReceiver
+import android.os.*
+import android.app.PendingIntent
+import android.widget.Toast
+import kotlinx.coroutines.channels.BroadcastChannel
+
 
 class LocationService : Service() {
     companion object {
@@ -38,7 +52,97 @@ class LocationService : Service() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
+    val vibrator: Vibrator? = null
+
+
+    @SuppressLint("NewApi")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // カテゴリー名（通知設定画面に表示される情報）
+        val name = "アラーム"
+        // システムに登録するChannelのID
+        val id = "casareal_chanel1"
+        // 通知の詳細情報（通知設定画面に表示される情報）
+        val notifyDescription = "アラームの詳しい設定を行います"
+
+        // Channelの取得と生成
+        if (notificationManager.getNotificationChannel(id) == null) {
+            val attributes = AudioAttributes.Builder().apply {
+                setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            }.build()
+            val mChannel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH)
+            mChannel.setSound(Uri.parse("android.resource://$packageName/${R.raw.alert}"), attributes)  // 1. チャンネルに着信音を設
+            mChannel.description = notifyDescription
+            mChannel.enableVibration(true)
+//            mChannel.vibrationPattern = longArrayOf(0, 1000, 400, 200, 400, 200)
+            mChannel.canShowBadge();
+            mChannel.enableLights(true);
+            mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE;
+            mChannel.setShowBadge(true);
+            notificationManager.createNotificationChannel(mChannel)
+        }
+
+        //通知にタップで反応するテキストを追加
+        //通知にタップで反応するテキストを追加
+        val test_intent = Intent("test") //空のインテントを準備
+
+        test_intent.action = "test_action" //ブロードキャストが受信した時に識別する「タグ」のようなもの
+
+        test_intent.putExtra("sample_name", "sample value") //ブロードキャストするデータをセット
+
+        val test_pendingIntent = PendingIntent.getBroadcast(
+            baseContext,
+            0,
+            test_intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        ) //インテントをペンディングインテントに組み込む
+
+
+        // Create an explicit intent for an Activity in your app
+        val intent = Intent(this, MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+        val notification2 = NotificationCompat.Builder(this, "casareal_chanel1")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("title")
+            .setContentText("message")
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // ② 通知の重要度
+            .setCategory(NotificationCompat.CATEGORY_ALARM) // ③ 通知のカテゴリ
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setFullScreenIntent(pendingIntent, true)
+            .setVibrate(longArrayOf(0,1000,0,1000))
+            .addAction(  // 4. 「応答」ボタンを追加
+                R.drawable.false_bell,
+                "止める",
+                test_pendingIntent
+            )
+            .build()
+        notification2.flags = Notification.FLAG_ONLY_ALERT_ONCE or Notification.FLAG_NO_CLEAR or Notification.FLAG_INSISTENT
+
+
+        notificationManager.notify(99, notification2)
+
+
+//        val vibrator: Vibrator? = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            val vibrationEffect = VibrationEffect.createWaveform(longArrayOf(200, 300), intArrayOf(255, 0), 0)
+//            vibrator?.vibrate(vibrationEffect)
+//        } else {
+//            vibrator?.vibrate(300)
+//        }
+
+
+
+
+
+
+
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
         var updatedCount = 0
@@ -53,6 +157,8 @@ class LocationService : Service() {
                         for(j in i.routeList!!){
                             Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
                             Log.d("debag3","${getDistance(location.latitude,location.longitude,j.placeLat,j.placeLon,'k')}")
+
+
                         }
                     }
                 }
@@ -77,6 +183,30 @@ class LocationService : Service() {
         return START_STICKY
     }
 
+//    var MyReceiver2: BroadcastReceiver = object : BroadcastReceiver() {
+//        //サービスから処理のオーダーを受け取る
+//        override fun onReceive(context: Context, intent: Intent) {
+//            if (intent.action == "test_action") {  //"test_action"というインテントフィルターが付いた依頼を処理
+//
+//                //ここは別スレッドなのでHandlerを利用してUIスレッドにアクセスしなければならない
+//                Handler().post{
+//                    sample() //任意の処理（この場合はサンプルメソッドを実行）
+//                }
+//            }
+//        }
+//    }
+
+    class MyReceiver: BroadcastReceiver(){
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            if (p1?.action == "test_action") {  //"test_action"というインテントフィルターが付いた依頼を処理
+
+
+            }
+            Toast.makeText(p0, "Received ", Toast.LENGTH_LONG).show();
+
+        }
+
+    }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
