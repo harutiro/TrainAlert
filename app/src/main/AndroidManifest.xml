@@ -50,13 +50,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".service.LocationService$MyReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="test" />
-            </intent-filter>
-        </receiver>
         <service android:name=".service.LocationService" />
+        <receiver
+            android:name=".service.StopAlertRecever"
+            android:process=":remote" >
+        </receiver>
     </application>
 
 </manifest>

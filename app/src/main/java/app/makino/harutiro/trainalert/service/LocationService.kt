@@ -58,26 +58,30 @@ class LocationService : Service() {
     @SuppressLint("NewApi")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
+//        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝通知部分
+//        マネージャーのインスタンス化
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // カテゴリー名（通知設定画面に表示される情報）
-        val name = "アラーム"
+        val name = "通常アラーム"
         // システムに登録するChannelのID
-        val id = "casareal_chanel1"
+        val id = "TrainDefaultAlertChannel"
         // 通知の詳細情報（通知設定画面に表示される情報）
         val notifyDescription = "アラームの詳しい設定を行います"
 
         // Channelの取得と生成
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&notificationManager.getNotificationChannel(id) == null) {
+//            デフォルト音声についての設定
             val attributes = AudioAttributes.Builder().apply {
                 setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
             }.build()
+//            チャンネルの重要度の設定
             val mChannel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH)
-            mChannel.setSound(Uri.parse("android.resource://$packageName/${R.raw.alert}"), attributes)  // 1. チャンネルに着信音を設
+//            着信音の設定
+            mChannel.setSound(Uri.parse("android.resource://$packageName/${R.raw.alert}"), attributes)
             mChannel.description = notifyDescription
             mChannel.enableVibration(true)
-//            mChannel.vibrationPattern = longArrayOf(0, 1000, 400, 200, 400, 200)
             mChannel.canShowBadge();
             mChannel.enableLights(true);
             mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE;
@@ -86,12 +90,7 @@ class LocationService : Service() {
         }
 
         //通知にタップで反応するテキストを追加
-        //通知にタップで反応するテキストを追加
-        val test_intent = Intent("test") //空のインテントを準備
-
-        test_intent.action = "test_action" //ブロードキャストが受信した時に識別する「タグ」のようなもの
-
-        test_intent.putExtra("sample_name", "sample value") //ブロードキャストするデータをセット
+        val test_intent = Intent(this,StopAlertRecever::class.java) //空のインテントを準備
 
         val test_pendingIntent = PendingIntent.getBroadcast(
             baseContext,
@@ -195,18 +194,6 @@ class LocationService : Service() {
 //            }
 //        }
 //    }
-
-    class MyReceiver: BroadcastReceiver(){
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (p1?.action == "test_action") {  //"test_action"というインテントフィルターが付いた依頼を処理
-
-
-            }
-            Toast.makeText(p0, "Received ", Toast.LENGTH_LONG).show();
-
-        }
-
-    }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
