@@ -68,7 +68,7 @@ class LocationService : Service() {
         val notifyDescription = "アラームの詳しい設定を行います"
 
         // Channelの取得と生成
-        if (notificationManager.getNotificationChannel(id) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&notificationManager.getNotificationChannel(id) == null) {
             val attributes = AudioAttributes.Builder().apply {
                 setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
