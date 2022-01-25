@@ -80,18 +80,24 @@ class LocationService : Service() {
             val mChannel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH)
 //            着信音の設定
             mChannel.setSound(Uri.parse("android.resource://$packageName/${R.raw.alert}"), attributes)
+//            通知チャンネルの詳細表示
             mChannel.description = notifyDescription
+//            バイブの許可
             mChannel.enableVibration(true)
+//            ？？？
             mChannel.canShowBadge();
+//            LEDの許可
             mChannel.enableLights(true);
+//            ？？？
             mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE;
+//            ？？？
             mChannel.setShowBadge(true);
+//            チャンネルの追加
             notificationManager.createNotificationChannel(mChannel)
         }
 
-        //通知にタップで反応するテキストを追加
+        //通知にタップで反応するレシーバーを作成
         val test_intent = Intent(this,StopAlertRecever::class.java) //空のインテントを準備
-
         val test_pendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -99,13 +105,11 @@ class LocationService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT
         ) //インテントをペンディングインテントに組み込む
 
-
-        // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, MainActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        //通常のタップでMainに飛ぶ通知
+        val intent = Intent(this, MainActivity::class.java).apply {}
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
+//        通知の作成
         val notification2 = NotificationCompat.Builder(this, "casareal_chanel1")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("title")
@@ -123,25 +127,10 @@ class LocationService : Service() {
             .build()
         notification2.flags = Notification.FLAG_ONLY_ALERT_ONCE or Notification.FLAG_NO_CLEAR or Notification.FLAG_INSISTENT
 
-
         notificationManager.notify(99, notification2)
 
 
-//        val vibrator: Vibrator? = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-//
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            val vibrationEffect = VibrationEffect.createWaveform(longArrayOf(200, 300), intArrayOf(255, 0), 0)
-//            vibrator?.vibrate(vibrationEffect)
-//        } else {
-//            vibrator?.vibrate(300)
-//        }
-
-
-
-
-
-
-
+//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝距離計算
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
         var updatedCount = 0
@@ -181,19 +170,6 @@ class LocationService : Service() {
 
         return START_STICKY
     }
-
-//    var MyReceiver2: BroadcastReceiver = object : BroadcastReceiver() {
-//        //サービスから処理のオーダーを受け取る
-//        override fun onReceive(context: Context, intent: Intent) {
-//            if (intent.action == "test_action") {  //"test_action"というインテントフィルターが付いた依頼を処理
-//
-//                //ここは別スレッドなのでHandlerを利用してUIスレッドにアクセスしなければならない
-//                Handler().post{
-//                    sample() //任意の処理（この場合はサンプルメソッドを実行）
-//                }
-//            }
-//        }
-//    }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
