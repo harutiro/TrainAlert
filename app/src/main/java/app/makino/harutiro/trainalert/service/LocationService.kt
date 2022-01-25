@@ -162,7 +162,12 @@ class LocationService : Service() {
 
                                 realm.executeTransaction {
                                     val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
-                                    new?.routeNumber = i.routeNumber + 1
+
+                                    if(i.routeList!!.size <= i.routeNumber + 1){
+                                        new?.routeNumber = 0
+                                    }else{
+                                        new?.routeNumber = i.routeNumber + 1
+                                    }
                                 }
                             }
                         }
