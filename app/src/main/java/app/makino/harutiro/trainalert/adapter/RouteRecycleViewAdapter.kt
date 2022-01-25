@@ -28,7 +28,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
         val itemRouteNameTextView: TextView = view.findViewById(R.id.itemRouteNameTextView)
         val itemTouteAlertSwitch: Switch = view.findViewById(R.id.itemRouteAlertSwitch)
         val itemRouteRemoveButton: ImageButton = view.findViewById(R.id.itemRouteRemoveButton)
-        
+        val itemRouteNextStationTextView:TextView = view.findViewById(R.id.itemRouteNextStationTextView)
     }
 
     //はめ込むものを指定
@@ -47,6 +47,8 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
 
 //        itemとレイアウトの直接の結びつけ
         holder.itemRouteNameTextView.text = person?.routeName
+
+        holder.itemRouteNextStationTextView.text = person?.routeList?.get(person.routeNumber)?.placeLovalLanguageName
 
 //
     }
