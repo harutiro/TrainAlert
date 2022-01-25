@@ -49,6 +49,8 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
             if(i.routeList !=null ){
                 for(j in i.routeList!!){
                     Log.d("debag3",j.placeName)
+                    Log.d("debag3",j.indexCount.toString())
+
 
                 }
             }

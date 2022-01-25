@@ -83,9 +83,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             var saveArrayDate = ArrayList<RouteListDateClass>()
 
-
+            var indexCount = 0
             for (i in editAddRouteLiniurLayout) {
-
                 val saveDate = RouteListDateClass()
 
                 if (i.findViewById<View>(R.id.itemEditTopLineView).visibility == GONE) {
@@ -94,6 +93,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility == GONE) {
                     saveDate.end = true
                 }
+
+                saveDate.indexCount = indexCount
+
 
 //               ＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋PlaceID取得部分
 
@@ -154,7 +156,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                                         saveDate.placeLat = place.latLng.latitude
                                         saveDate.placeLon = place.latLng.longitude
 
-
 //                                        重複保存を回避
                                         if(!saveArrayDate.any { it.placeName == saveDate.placeName }){
                                             saveArrayDate.add(saveDate)
@@ -184,6 +185,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                     }
 
+                indexCount++
             }
 
 //            PlaceIDの取得のために５秒ほど送らせてから保存をする
