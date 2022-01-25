@@ -32,6 +32,7 @@ import android.os.*
 import android.app.PendingIntent
 import android.widget.Toast
 import kotlinx.coroutines.channels.BroadcastChannel
+import java.util.*
 
 
 class LocationService : Service() {
@@ -141,16 +142,27 @@ class LocationService : Service() {
                     Log.d("debag2", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
 
                     for(i in realmResalt){
-                        for(j in i.routeList!!){
-                            val distance = getDistance(location.latitude,location.longitude,j.placeLat,j.placeLon,'k')
+                        val j = i.routeList?.get(i.routeNumber)
 
+                        val distance = j?.let {
+                            getDistance(location.latitude,location.longitude,
+                                it.placeLat,j.placeLon,'k')
+                        }
+
+                        if (j != null) {
                             Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
                             Log.d("debag3","$distance")
+                        }
 
+                        if (distance != null) {
                             if(distance <= 0.200){
                                 notificationManager.notify(99, notification2)
-                            }
 
+                                realm.executeTransaction {
+                                    val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
+                                    new?.routeNumber = i.routeNumber + 1
+                                }
+                            }
                         }
                     }
                 }

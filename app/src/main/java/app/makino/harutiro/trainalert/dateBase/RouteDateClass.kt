@@ -22,4 +22,5 @@ open class RouteDateClass(
     open var weekSat:Boolean = false,
     open var weekSun:Boolean = false,
     open var routeList:RealmList<RouteListDateClass>? = null,
+    open var routeNumber:Int = 0,
 ): RealmObject()
