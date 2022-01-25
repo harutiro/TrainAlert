@@ -31,6 +31,7 @@ import android.content.BroadcastReceiver
 import android.os.*
 import android.app.PendingIntent
 import android.widget.Toast
+import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import kotlinx.coroutines.channels.BroadcastChannel
 import java.util.*
 
@@ -130,6 +131,7 @@ class LocationService : Service() {
 
 
 
+
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝距離計算
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
@@ -142,7 +144,7 @@ class LocationService : Service() {
                     Log.d("debag2", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
 
                     for(i in realmResalt){
-                        val j = i.routeList?.get(i.routeNumber)
+                        val j = i.routeList?.sortedBy { it.indexCount }?.get(i.routeNumber)
 
                         val distance = j?.let {
                             getDistance(location.latitude,location.longitude,
