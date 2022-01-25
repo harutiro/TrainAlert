@@ -127,7 +127,6 @@ class LocationService : Service() {
             .build()
         notification2.flags = Notification.FLAG_ONLY_ALERT_ONCE or Notification.FLAG_NO_CLEAR or Notification.FLAG_INSISTENT
 
-        notificationManager.notify(99, notification2)
 
 
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝距離計算
@@ -143,9 +142,14 @@ class LocationService : Service() {
 
                     for(i in realmResalt){
                         for(j in i.routeList!!){
-                            Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
-                            Log.d("debag3","${getDistance(location.latitude,location.longitude,j.placeLat,j.placeLon,'k')}")
+                            val distance = getDistance(location.latitude,location.longitude,j.placeLat,j.placeLon,'k')
 
+                            Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
+                            Log.d("debag3","$distance")
+
+                            if(distance <= 0.200){
+                                notificationManager.notify(99, notification2)
+                            }
 
                         }
                     }
