@@ -38,7 +38,16 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
         val rView = view.findViewById<RecyclerView>(R.id.routeRV)
-        adapter = RouteRecycleViewAdapter(requireContext(), object: RouteRecycleViewAdapter.OnItemClickListner{})
+        adapter = RouteRecycleViewAdapter(requireContext(), object: RouteRecycleViewAdapter.OnItemClickListner{
+            override fun onItemClick(item: RouteDateClass) {
+                // SecondActivityに遷移するためのIntent
+                val intent = Intent(context, EditActivity::class.java)
+                // RecyclerViewの要素をタップするとintentによりSecondActivityに遷移する
+                // また，要素のidをSecondActivityに渡す
+                intent.putExtra("id", item.id)
+                startActivity(intent)
+            }
+        })
         rView.layoutManager = LinearLayoutManager(context)
         rView.adapter = adapter
 

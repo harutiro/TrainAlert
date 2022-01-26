@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -29,6 +30,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
         val itemTouteAlertSwitch: Switch = view.findViewById(R.id.itemRouteAlertSwitch)
         val itemRouteRemoveButton: ImageButton = view.findViewById(R.id.itemRouteRemoveButton)
         val itemRouteNextStationTextView:TextView = view.findViewById(R.id.itemRouteNextStationTextView)
+        val itemROuteConstraint:ConstraintLayout =view.findViewById(R.id.itemRouteConstraint)
     }
 
     //はめ込むものを指定
@@ -43,7 +45,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
         val person = realm.where(RouteDateClass::class.java).equalTo("id",item.id).findFirst()
 
 //        // MainActivity側でタップしたときの動作を記述するため，n番目の要素を渡す
-//        holder.container.setOnClickListener { listener.onItemClick(item) }
+        holder.itemROuteConstraint.setOnClickListener { listener.onItemClick(item) }
 
 //        itemとレイアウトの直接の結びつけ
         holder.itemRouteNameTextView.text = person?.routeName
@@ -60,7 +62,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
 
     // RecyclerViewの要素をタップするためのもの
     interface OnItemClickListner{
-//        fun onItemClick(item: RouteListDateClass)
+        fun onItemClick(item: RouteDateClass)
     }
 
     fun reView(){

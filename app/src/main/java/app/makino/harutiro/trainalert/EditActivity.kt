@@ -51,6 +51,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        // MainActivityのRecyclerViewの要素をタップした場合はidが，fabをタップした場合は"空白"が入っているはず
+        id = intent.getStringExtra("id")
+
 
         var lat01 = 0.0
         var lon01 = 0.0
@@ -60,7 +63,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リニアレイアウトの追加部分
         val editAddRouteLiniurLayout = findViewById<LinearLayout>(R.id.editAddRouteLinearLayout)
 
-        if (id == "") {
+        if (id.isNullOrEmpty()) {
 
             val newRoute = listOf<RouteListDateClass>(
                 RouteListDateClass(start = true),
@@ -73,6 +76,14 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         } else {
             val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+
+            findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
+
+            if (realmResalt != null) {
+                for (i in realmResalt.routeList?.sortedBy { it.indexCount }!!) {
+                    addNLinearLayOutRouteItem(editAddRouteLiniurLayout, i, null)
+                }
+            }
         }
 
 
@@ -217,6 +228,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                         new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
                         new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
 
+                        new?.routeList?.clear()
                         new?.routeList?.addAll(saveArrayDate)
 
                     }
@@ -274,6 +286,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         if (i?.end == true) {
             v.findViewById<View>(R.id.itemEditButtomLineView).visibility = GONE
             v.findViewById<Button>(R.id.itemEditAddButton).visibility = GONE
+        }
+
+        if(!i?.placeLovalLanguageName.isNullOrBlank()){
+            v.findViewById<EditText>(R.id.itemEditRouteEditText).setText(i?.placeLovalLanguageName)
         }
 
 
