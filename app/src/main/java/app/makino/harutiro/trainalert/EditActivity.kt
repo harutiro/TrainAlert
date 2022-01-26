@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.widget.*
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -281,11 +282,11 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         if (i?.start == true) {
-            v.findViewById<View>(R.id.itemEditTopLineView).visibility = GONE
+            v.findViewById<View>(R.id.itemEditTopLineView).visibility = INVISIBLE
         }
         if (i?.end == true) {
-            v.findViewById<View>(R.id.itemEditButtomLineView).visibility = GONE
-            v.findViewById<Button>(R.id.itemEditAddButton).visibility = GONE
+            v.findViewById<View>(R.id.itemEditButtomLineView).visibility = INVISIBLE
+            v.findViewById<Button>(R.id.itemEditAddButton).visibility = INVISIBLE
         }
 
         if(!i?.placeLovalLanguageName.isNullOrBlank()){
