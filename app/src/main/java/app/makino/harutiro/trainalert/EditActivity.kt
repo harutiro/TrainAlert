@@ -32,9 +32,7 @@ import androidx.core.view.iterator
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -90,6 +88,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        val circlesList = ArrayList<Circle>()
+        val polyLineList = ArrayList<Polyline>()
+
         findViewById<Button>(R.id.editSearchButton).setOnClickListener{
             Snackbar.make(findViewById(android.R.id.content),"検索中", Snackbar.LENGTH_SHORT).show()
 
@@ -97,28 +98,44 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             Handler(Looper.getMainLooper()).postDelayed({
 
                 val sortedRouteLists = routeLists.sortedBy { it.indexCount }
+                for(i in circlesList){
+                    i.remove()
+                }
+                circlesList.clear()
+                for(i in polyLineList){
+                    i.remove()
+                }
+                polyLineList.clear()
 
                 for ((index,j) in sortedRouteLists.withIndex()){
 
                     val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
                     val radius = 400.0// 10km
-                    googleMap.addCircle(
-                        CircleOptions()
-                            .center(latLng)          // 円の中心位置
-                            .radius(radius)          // 半径 (メートル単位)
-                            .strokeColor(Color.BLUE) // 線の色
-                            .strokeWidth(2f)         // 線の太さ
-                            .fillColor(0x400080ff)   // 円の塗りつぶし色
+                    circlesList.add(
+                        googleMap.addCircle(
+                            CircleOptions()
+                                .center(latLng)          // 円の中心位置
+                                .radius(radius)          // 半径 (メートル単位)
+                                .strokeColor(Color.BLUE) // 線の色
+                                .strokeWidth(2f)         // 線の太さ
+                                .fillColor(0x400080ff)   // 円の塗りつぶし色
+                        )
                     )
 
-                    if (index < routeLists.size - 1)
-                        googleMap.addPolyline(
-                            PolylineOptions()
-                                .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
-                                .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
-                                .color(Color.BLUE)                   // 線の色
-                                .width(8f)                          // 線の太さ
+
+
+                    if (index < routeLists.size - 1){
+                        polyLineList.add(
+                            googleMap.addPolyline(
+                                PolylineOptions()
+                                    .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
+                                    .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
+                                    .color(Color.BLUE)                   // 線の色
+                                    .width(8f)                          // 線の太さ
+                            )
                         )
+                    }
+
                 }
             },5000)
 
