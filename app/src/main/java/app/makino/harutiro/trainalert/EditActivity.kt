@@ -7,8 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.View.GONE
-import android.view.View.INVISIBLE
+import android.view.View.*
 import android.widget.*
 import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -99,10 +98,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             for (i in editAddRouteLiniurLayout) {
                 val saveDate = RouteListDateClass()
 
-                if (i.findViewById<View>(R.id.itemEditTopLineView).visibility == GONE) {
+                if (i.findViewById<View>(R.id.itemEditTopLineView).visibility != VISIBLE) {
                     saveDate.start = true
                 }
-                if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility == GONE) {
+                if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility != VISIBLE) {
                     saveDate.end = true
                 }
 
