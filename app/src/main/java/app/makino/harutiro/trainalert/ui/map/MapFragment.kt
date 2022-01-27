@@ -21,6 +21,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import io.realm.Realm
 
 
@@ -54,7 +55,7 @@ class MapFragment : Fragment() {
 
 //        通知の範囲をお知らせ
         for (i in realmResalt){
-            for (j in i.routeList!!){
+            for ((index,j) in i.routeList!!.withIndex()){
                 val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
                 val radius = 400.0// 10km
                 googleMap.addCircle(
@@ -64,6 +65,15 @@ class MapFragment : Fragment() {
                         .strokeColor(Color.BLUE) // 線の色
                         .strokeWidth(2f)         // 線の太さ
                         .fillColor(0x400080ff)   // 円の塗りつぶし色
+                )
+
+                if (index < i.routeList!!.size - 1)
+                googleMap.addPolyline(
+                    PolylineOptions()
+                        .add(LatLng(i.routeList!![index]?.placeLat ?: 0.0,i.routeList!![index]?.placeLon ?: 0.0 )) // 東京駅
+                        .add(LatLng(i.routeList!![index + 1]?.placeLat ?: 0.0,i.routeList!![index +1]?.placeLon ?: 0.0 )) // 東京駅
+                        .color(Color.BLUE)                   // 線の色
+                        .width(8f)                          // 線の太さ
                 )
             }
         }
