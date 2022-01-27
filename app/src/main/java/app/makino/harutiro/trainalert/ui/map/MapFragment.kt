@@ -2,6 +2,7 @@ package app.makino.harutiro.trainalert.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -12,16 +13,23 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import app.makino.harutiro.trainalert.R
+import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import io.realm.Realm
 
 
 class MapFragment : Fragment() {
 
+
+    private val realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -41,6 +49,25 @@ class MapFragment : Fragment() {
             val osakaStation = LatLng(location!!.latitude, location.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 16.0f))
         }
+
+        val realmResalt = realm.where(RouteDateClass::class.java).findAll()
+
+//        通知の範囲をお知らせ
+        for (i in realmResalt){
+            for (j in i.routeList!!){
+                val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
+                val radius = 400.0// 10km
+                googleMap.addCircle(
+                    CircleOptions()
+                        .center(latLng)          // 円の中心位置
+                        .radius(radius)          // 半径 (メートル単位)
+                        .strokeColor(Color.BLUE) // 線の色
+                        .strokeWidth(2f)         // 線の太さ
+                        .fillColor(0x400080ff)   // 円の塗りつぶし色
+                )
+            }
+        }
+
 
 
     }
