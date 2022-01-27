@@ -1,7 +1,7 @@
 package app.makino.harutiro.trainalert
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
-import app.makino.harutiro.trainalert.adapter.EditRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.common.api.ApiException
@@ -20,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -28,17 +26,15 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.realm.Realm
 import java.util.*
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 import android.widget.LinearLayout
 import android.view.ViewGroup
-import androidx.core.view.get
 import androidx.core.view.iterator
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -50,6 +46,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     private val realm by lazy {
         Realm.getDefaultInstance()
     }
+
+    private lateinit var googleMap: GoogleMap
+
+    var routeLists = ArrayList<RouteListDateClass>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,123 +90,54 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        findViewById<Button>(R.id.editSearchButton).setOnClickListener{
+            Snackbar.make(findViewById(android.R.id.content),"検索中", Snackbar.LENGTH_SHORT).show()
+
+            searchRouteList(editAddRouteLiniurLayout)
+            Handler(Looper.getMainLooper()).postDelayed({
+
+                val sortedRouteLists = routeLists.sortedBy { it.indexCount }
+
+                for ((index,j) in sortedRouteLists.withIndex()){
+
+                    val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
+                    val radius = 400.0// 10km
+                    googleMap.addCircle(
+                        CircleOptions()
+                            .center(latLng)          // 円の中心位置
+                            .radius(radius)          // 半径 (メートル単位)
+                            .strokeColor(Color.BLUE) // 線の色
+                            .strokeWidth(2f)         // 線の太さ
+                            .fillColor(0x400080ff)   // 円の塗りつぶし色
+                    )
+
+                    if (index < routeLists.size - 1)
+                        googleMap.addPolyline(
+                            PolylineOptions()
+                                .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
+                                .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
+                                .color(Color.BLUE)                   // 線の色
+                                .width(8f)                          // 線の太さ
+                        )
+                }
+            },5000)
+
+
+
+        }
+
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
         findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener {
 
             Snackbar.make(findViewById(android.R.id.content),"保存中", Snackbar.LENGTH_SHORT).show()
 
-            var saveArrayDate = ArrayList<RouteListDateClass>()
-
-            var indexCount = 0
-            for (i in editAddRouteLiniurLayout) {
-                val saveDate = RouteListDateClass()
-
-                if (i.findViewById<View>(R.id.itemEditTopLineView).visibility != VISIBLE) {
-                    saveDate.start = true
-                }
-                if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility != VISIBLE) {
-                    saveDate.end = true
-                }
-
-                saveDate.indexCount = indexCount
-
-
-//               ＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋PlaceID取得部分
-
-                Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
-                val localLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
-//                Token作成
-                val token = AutocompleteSessionToken.newInstance()
-//                PlaceIDのリクエストするビルダー作成
-                val request =
-                    FindAutocompletePredictionsRequest.builder()
-                        .setCountries("JP")
-                        .setSessionToken(token)
-                        .setQuery(localLanguageName)
-                        .build()
-
-//                実際にリクエストを投げる部分
-                val placesClient = Places.createClient(this)
-                placesClient.findAutocompletePredictions(request)
-                    .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
-
-//                        ＋＋＋＋＋＋＋＋＋＋PlaceIDから緯度経度の取得
-
-                        for (prediction in response.autocompletePredictions) {
-//                            取得したいデータの項目を指定
-                            val placeFields = listOf(
-                                Place.Field.ID,
-                                Place.Field.NAME,
-                                Place.Field.ADDRESS,
-                                Place.Field.LAT_LNG,
-                                Place.Field.TYPES
-                            )
-
-                            // リクエストするインスタンスの作成
-                            val request1 =
-                                FetchPlaceRequest.newInstance(prediction.placeId, placeFields)
-
-//                            実際にリクエストを投げる
-                            val placesClient = Places.createClient(this)
-                            placesClient.fetchPlace(request1)
-                                .addOnSuccessListener { response: FetchPlaceResponse ->
-//                                    取得したデータを保存
-                                    val place = response.place
-
-//                                    もしその住所の属性に駅があったら
-                                    if (place.types.contains(Place.Type.TRANSIT_STATION)) {
-
-                                        Log.d(
-                                            "debag",
-                                            "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}"
-                                        )
-
-//                                        住所の配列に保存
-                                        saveDate.placeLovalLanguageName = localLanguageName
-                                        saveDate.placeName = place.name
-                                        saveDate.placeId = place.id
-                                        saveDate.placeType = place.types.toString()
-                                        saveDate.placeMyAddress = place.address
-                                        saveDate.placeLat = place.latLng.latitude
-                                        saveDate.placeLon = place.latLng.longitude
-
-//                                        重複保存を回避
-                                        if(!saveArrayDate.any { it.placeName == saveDate.placeName }){
-                                            saveArrayDate.add(saveDate)
-                                        }
-
-                                        return@addOnSuccessListener
-
-
-                                    }
-
-
-                                }.addOnFailureListener { exception: Exception ->
-//                                    エラー部分
-                                    if (exception is ApiException) {
-                                        Log.d("debag", "Place not found: ${exception.message}")
-                                        val statusCode = exception.statusCode
-                                    }
-                                }
-
-
-                        }
-                    }.addOnFailureListener { exception: Exception? ->
-//                        PlaceIDのエラー部分
-                        if (exception is ApiException) {
-                            Log.e("debag", "Place not found: " + exception.statusCode)
-
-                        }
-                    }
-
-                indexCount++
-            }
+            searchRouteList(editAddRouteLiniurLayout)
 
 //            PlaceIDの取得のために５秒ほど送らせてから保存をする
             Handler(Looper.getMainLooper()).postDelayed({
 //                住所の配列が０でないとき
-                if (saveArrayDate.size != 0){
+                if (routeLists.size != 0){
                     realm.executeTransaction {
 
                         val new = if (id.isNullOrEmpty()) {
@@ -233,7 +164,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                         new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
 
                         new?.routeList?.clear()
-                        new?.routeList?.addAll(saveArrayDate.sortedBy { it.indexCount })
+                        new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
 
                     }
 
@@ -243,6 +174,121 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                     Snackbar.make(findViewById(android.R.id.content),"保存ができませんでした。", Snackbar.LENGTH_SHORT).show()
                 }
             }, 5000)
+        }
+    }
+
+
+    fun searchRouteList(editAddRouteLiniurLayout: LinearLayout) {
+        routeLists.clear()
+
+        var indexCount = 0
+        for (i in editAddRouteLiniurLayout) {
+
+            Log.d("debag6",i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString())
+            Log.d("debag6",indexCount.toString())
+
+
+            val saveDate = RouteListDateClass()
+
+            if (i.findViewById<View>(R.id.itemEditTopLineView).visibility != VISIBLE) {
+                saveDate.start = true
+            }
+            if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility != VISIBLE) {
+                saveDate.end = true
+            }
+
+            saveDate.indexCount = indexCount
+
+
+//               ＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋PlaceID取得部分
+
+            Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
+            val localLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
+//                Token作成
+            val token = AutocompleteSessionToken.newInstance()
+//                PlaceIDのリクエストするビルダー作成
+            val request =
+                FindAutocompletePredictionsRequest.builder()
+                    .setCountries("JP")
+                    .setSessionToken(token)
+                    .setQuery(localLanguageName)
+                    .build()
+
+//                実際にリクエストを投げる部分
+            val placesClient = Places.createClient(this)
+            placesClient.findAutocompletePredictions(request)
+                .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+
+//                        ＋＋＋＋＋＋＋＋＋＋PlaceIDから緯度経度の取得
+
+                    for (prediction in response.autocompletePredictions) {
+//                            取得したいデータの項目を指定
+                        val placeFields = listOf(
+                            Place.Field.ID,
+                            Place.Field.NAME,
+                            Place.Field.ADDRESS,
+                            Place.Field.LAT_LNG,
+                            Place.Field.TYPES
+                        )
+
+                        // リクエストするインスタンスの作成
+                        val request1 =
+                            FetchPlaceRequest.newInstance(prediction.placeId, placeFields)
+
+//                            実際にリクエストを投げる
+                        val placesClient = Places.createClient(this)
+                        placesClient.fetchPlace(request1)
+                            .addOnSuccessListener { response: FetchPlaceResponse ->
+//                                    取得したデータを保存
+                                val place = response.place
+
+//                                    もしその住所の属性に駅があったら
+                                if (place.types.contains(Place.Type.TRANSIT_STATION)) {
+
+                                    Log.d(
+                                        "debag",
+                                        "Place: ${place.name}, ${place.id},${place.types} ,${place.address},${place.latLng}"
+                                    )
+
+//                                        住所の配列に保存
+                                    saveDate.placeLovalLanguageName = localLanguageName
+                                    saveDate.placeName = place.name
+                                    saveDate.placeId = place.id
+                                    saveDate.placeType = place.types.toString()
+                                    saveDate.placeMyAddress = place.address
+                                    saveDate.placeLat = place.latLng.latitude
+                                    saveDate.placeLon = place.latLng.longitude
+
+//                                        重複保存を回避
+                                    if(!routeLists.any { it.placeName == saveDate.placeName }){
+                                        routeLists.add(saveDate)
+                                    }
+
+                                    return@addOnSuccessListener
+
+
+                                }
+
+
+                            }.addOnFailureListener { exception: Exception ->
+//                                    エラー部分
+                                if (exception is ApiException) {
+                                    Log.d("debag", "Place not found: ${exception.message}")
+                                    val statusCode = exception.statusCode
+                                }
+                            }
+
+
+                    }
+                }.addOnFailureListener { exception: Exception? ->
+//                        PlaceIDのエラー部分
+                    if (exception is ApiException) {
+                        Log.e("debag", "Place not found: " + exception.statusCode)
+
+                    }
+                }
+
+            indexCount++
         }
     }
 
@@ -288,7 +334,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap) {
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
         //        ツールバーの表示
         googleMap.uiSettings.isMapToolbarEnabled = true
 
