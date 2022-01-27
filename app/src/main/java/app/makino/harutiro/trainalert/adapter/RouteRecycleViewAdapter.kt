@@ -52,6 +52,13 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
 
         holder.itemRouteNextStationTextView.text = person?.routeList?.get(person.routeNumber)?.placeLovalLanguageName
 
+        holder.itemRouteRemoveButton.setOnClickListener {
+            realm.executeTransaction {
+                person?.deleteFromRealm()
+            }
+            listener.onReView("消去しました")
+        }
+
 //
     }
 
@@ -63,6 +70,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
     // RecyclerViewの要素をタップするためのもの
     interface OnItemClickListner{
         fun onItemClick(item: RouteDateClass)
+        fun onReView(moji: String)
     }
 
     fun reView(){

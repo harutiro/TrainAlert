@@ -12,6 +12,7 @@ import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.RouteRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import io.realm.Realm
 
 class RouteFragment : Fragment(R.layout.fragment_route) {
@@ -46,6 +47,11 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
                 // また，要素のidをSecondActivityに渡す
                 intent.putExtra("id", item.id)
                 startActivity(intent)
+            }
+
+            override fun onReView(moji: String) {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),moji, Snackbar.LENGTH_SHORT).show()
+                adapter?.setList(realm.where(RouteDateClass::class.java).findAll())
             }
         })
         rView.layoutManager = LinearLayoutManager(context)
