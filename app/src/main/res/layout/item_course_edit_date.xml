@@ -60,6 +60,7 @@
         android:inputType="textMultiLine"
         android:padding="8dp"
         android:text="5分前"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/itemEditRouteEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.528"
