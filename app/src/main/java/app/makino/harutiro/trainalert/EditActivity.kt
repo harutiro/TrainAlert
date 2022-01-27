@@ -38,8 +38,6 @@ import com.google.android.material.snackbar.Snackbar
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    val tag = "debag"
-
     //    データ受け渡し
     var id: String? = ""
 
@@ -53,12 +51,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // MainActivityのRecyclerViewの要素をタップした場合はidが，fabをタップした場合は"空白"が入っているはず
         id = intent.getStringExtra("id")
-
-
-        var lat01 = 0.0
-        var lon01 = 0.0
-        var lat02 = 0.0
-        var lon02 = 0.0
 
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リニアレイアウトの追加部分
         val editAddRouteLiniurLayout = findViewById<LinearLayout>(R.id.editAddRouteLinearLayout)
@@ -243,23 +235,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-////       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
-//        val rView = findViewById<RecyclerView>(R.id.editRV)
-//        adapter = EditRecycleViewAdapter(this , object: EditRecycleViewAdapter.OnItemClickListner{})
-//        rView.layoutManager = LinearLayoutManager(this)
-//        rView.adapter = adapter
-//        if(id == ""){
-//            adapter?.setList(
-//                listOf<RouteListDateClass>(
-//                    RouteListDateClass(start = true),
-//                    RouteListDateClass(end = true)
-//                )
-//            )
-//        }else{
-//            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id",id).findFirst()
-//            adapter?.setList(realmResalt?.routeList!!)
-//        }
-
 
     fun addNLinearLayOutRouteItem(
         editAddRouteLiniurLayout: LinearLayout,
@@ -303,47 +278,5 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(p0: GoogleMap) {
 
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-    }
-
-
-    /*
-     * 2点間の距離を取得
-     * 第五引数に設定するキー（unit）で単位別で取得できる
-     */
-    private fun getDistance(
-        lat1: Double,
-        lon1: Double,
-        lat2: Double,
-        lon2: Double,
-        unit: Char
-    ): Double {
-        val theta = lon1 - lon2
-        var dist =
-            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(
-                deg2rad(lat2)
-            ) * cos(deg2rad(theta))
-        dist = acos(dist)
-        dist = rad2deg(dist)
-        val miles = dist * 60 * 1.1515
-        return when (unit) {
-            'K' -> miles * 1.609344
-            'N' -> miles * 0.8684
-            'M' -> miles
-            else -> miles
-        }
-    }
-
-    private fun rad2deg(radian: Double): Double {
-        return radian * (180f / Math.PI)
-    }
-
-    fun deg2rad(degrees: Double): Double {
-        return degrees * (Math.PI / 180f)
-    }
-
 
 }
