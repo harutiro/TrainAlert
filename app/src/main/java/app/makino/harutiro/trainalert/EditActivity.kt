@@ -221,7 +221,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                         new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
 
                         new?.routeList?.clear()
-                        new?.routeList?.addAll(saveArrayDate)
+                        new?.routeList?.addAll(saveArrayDate.sortedBy { it.indexCount })
 
                     }
 
