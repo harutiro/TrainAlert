@@ -24,15 +24,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        tools:context=".MainActivity">
+        tools:context=".EditActivity">
 
         <fragment
-            android:id="@+id/mapFragment"
-            android:name="com.google.android.gms.maps.MapFragment"
+            android:id="@+id/editMapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="-16dp"
-            tools:layout_editor_absoluteY="-150dp" />
+            tools:layout_editor_absoluteY="-150dp"
+            tools:context=".EditActivity"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

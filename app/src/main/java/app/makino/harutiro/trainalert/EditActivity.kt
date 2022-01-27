@@ -1,6 +1,8 @@
 package app.makino.harutiro.trainalert
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -33,6 +35,10 @@ import android.widget.LinearLayout
 import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.core.view.iterator
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -45,9 +51,15 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         Realm.getDefaultInstance()
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.editMapFragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         // MainActivityのRecyclerViewの要素をタップした場合はidが，fabをタップした場合は"空白"が入っているはず
         id = intent.getStringExtra("id")
@@ -275,8 +287,24 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(p0: GoogleMap) {
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap) {
+        //        ツールバーの表示
+        googleMap.uiSettings.isMapToolbarEnabled = true
 
+        googleMap.isMyLocationEnabled = true
+
+        //                現在地の表示
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            // Got last known location. In some rare situations this can be null.
+            Log.d("debag", "緯度:" + location?.latitude.toString())
+            Log.d("debag", "経度:" + location?.longitude.toString())
+
+//                        カメラ移動
+            val osakaStation = LatLng(location!!.latitude, location.longitude)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 16.0f))
+        }
     }
 
 }
