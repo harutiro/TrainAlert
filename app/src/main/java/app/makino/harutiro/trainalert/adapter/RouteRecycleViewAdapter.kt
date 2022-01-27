@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
-import app.makino.harutiro.trainalert.ui.route.RouteFragment
 import io.realm.Realm
+
 
 class RouteRecycleViewAdapter(private val context: Context, private val listener: OnItemClickListner):
     RecyclerView.Adapter<RouteRecycleViewAdapter.ViewHolder>() {
@@ -27,7 +26,7 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val itemRouteIconImageView : ImageView = view.findViewById(R.id.itemRouteIconImageView)
         val itemRouteNameTextView: TextView = view.findViewById(R.id.itemRouteNameTextView)
-        val itemTouteAlertSwitch: Switch = view.findViewById(R.id.itemRouteAlertSwitch)
+        val itemRouteAlertSwitch: Switch = view.findViewById(R.id.itemRouteAlertSwitch)
         val itemRouteRemoveButton: ImageButton = view.findViewById(R.id.itemRouteRemoveButton)
         val itemRouteNextStationTextView:TextView = view.findViewById(R.id.itemRouteNextStationTextView)
         val itemROuteConstraint:ConstraintLayout =view.findViewById(R.id.itemRouteConstraint)
@@ -52,11 +51,22 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
 
         holder.itemRouteNextStationTextView.text = person?.routeList?.get(person.routeNumber)?.placeLovalLanguageName
 
+        holder.itemRouteAlertSwitch.isChecked = person?.alertCheck!!
+
         holder.itemRouteRemoveButton.setOnClickListener {
             realm.executeTransaction {
                 person?.deleteFromRealm()
             }
             listener.onReView("消去しました")
+        }
+
+        holder.itemRouteAlertSwitch.setOnCheckedChangeListener{ _, isChecked ->
+
+            realm.executeTransaction {
+                person?.alertCheck = isChecked
+            }
+//            TODO:アニメーションが消えるもんだい
+//            listener.onReView("アラートを切り替えました。")
         }
 
 //
