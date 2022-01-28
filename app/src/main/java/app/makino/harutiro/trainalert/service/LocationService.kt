@@ -104,7 +104,7 @@ class LocationService : Service() {
             baseContext,
             0,
             test_intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         ) //インテントをペンディングインテントに組み込む
 
         //通常のタップでMainに飛ぶ通知
@@ -112,7 +112,7 @@ class LocationService : Service() {
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
 //        通知の作成
-        val notification2 = NotificationCompat.Builder(this, "casareal_chanel1")
+        val notification2 = NotificationCompat.Builder(this, id)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("title")
             .setContentText("message")
