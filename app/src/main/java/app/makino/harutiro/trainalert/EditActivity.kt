@@ -387,8 +387,11 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //        初期のルートの線や円リストの追加
         val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
-        routeLists.addAll(realmResalt?.routeList!!)
-        routeAdd()
+        if(!id.isNullOrEmpty()){
+            routeLists.addAll(realmResalt?.routeList!!)
+            routeAdd()
+        }
+
     }
 
 }
