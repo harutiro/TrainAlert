@@ -29,6 +29,7 @@ import java.util.*
 import android.widget.LinearLayout
 import android.view.ViewGroup
 import androidx.core.view.iterator
+import androidx.core.view.size
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -133,7 +134,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //            PlaceIDの取得のために５秒ほど送らせてから保存をする
             Handler(Looper.getMainLooper()).postDelayed({
 //                住所の配列が０でないとき（０のときは保存できなかったと仮定する）
-                if (routeLists.size != 0){
+                val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+
+                if (routeLists.size == editAddRouteLiniurLayout.size){
                     realm.executeTransaction {
 
                         val new = if (id.isNullOrEmpty()) {
