@@ -38,17 +38,19 @@ import com.google.android.material.snackbar.Snackbar
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    //    データ受け渡し
+//    データ受け渡し
     var id: String? = ""
 
+//    レルム
     private val realm by lazy {
         Realm.getDefaultInstance()
     }
 
+//    GoogleMapの操作ができるやつ
     private lateinit var googleMap: GoogleMap
-
+//    ルートのリストを保存しておく部分
     var routeLists = ArrayList<RouteListDateClass>()
-
+//    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
 
@@ -57,7 +59,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //マップとフラグメントを結び透ける部分
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.editMapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -65,11 +67,11 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         // MainActivityのRecyclerViewの要素をタップした場合はidが，fabをタップした場合は"空白"が入っているはず
         id = intent.getStringExtra("id")
 
-//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リニアレイアウトの追加部分
+//       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝項目初期化部分
         val editAddRouteLiniurLayout = findViewById<LinearLayout>(R.id.editAddRouteLinearLayout)
 
         if (id.isNullOrEmpty()) {
-
+//          新規
             val newRoute = listOf<RouteListDateClass>(
                 RouteListDateClass(start = true),
                 RouteListDateClass(end = true)
@@ -80,9 +82,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         } else {
+//            編集
+//            ※円や線のマップ関係の初期設定はonMapReadyで行う。
             val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
 
-//            ※円や線のマップ関係の初期設定はonMapReadyで行う。
             findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
 
             if (realmResalt != null) {
@@ -92,8 +95,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-
-
+//        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝編集したるーとを手動で反映させる部分
         findViewById<Button>(R.id.editSearchButton).setOnClickListener{
             Snackbar.make(findViewById(android.R.id.content),"検索中", Snackbar.LENGTH_SHORT).show()
 
@@ -112,11 +114,12 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             Snackbar.make(findViewById(android.R.id.content),"保存中", Snackbar.LENGTH_SHORT).show()
 
+//            ルートの緯度経度などのリストを取得する
             searchRouteList(editAddRouteLiniurLayout)
 
 //            PlaceIDの取得のために５秒ほど送らせてから保存をする
             Handler(Looper.getMainLooper()).postDelayed({
-//                住所の配列が０でないとき
+//                住所の配列が０でないとき（０のときは保存できなかったと仮定する）
                 if (routeLists.size != 0){
                     realm.executeTransaction {
 
@@ -166,23 +169,24 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             Log.d("debag6",i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString())
             Log.d("debag6",indexCount.toString())
-
-
+//            保存する要素を作成
             val saveDate = RouteListDateClass()
-
+//            ルートのラインが見えていないところで最初か最後かを判断する。
             if (i.findViewById<View>(R.id.itemEditTopLineView).visibility != VISIBLE) {
                 saveDate.start = true
             }
             if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility != VISIBLE) {
                 saveDate.end = true
             }
-
+//            保存する順番を残すために残しておく
             saveDate.indexCount = indexCount
 
 
 //               ＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋PlaceID取得部分
-
+//                APIキーの指定
+//            TODO:STRINGに登録
             Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
+//                検索ワードの取得
             val localLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
 //                Token作成
             val token = AutocompleteSessionToken.newInstance()
@@ -273,7 +277,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun routeAdd(){
+//        保存されているリストが順番道理ではないため、順番に並べ替えられたものを新規作成
         val sortedRouteLists = routeLists.sortedBy { it.indexCount }
+
+//        すでにある円や線を消去
         for(i in circlesList){
             i.remove()
         }
@@ -283,10 +290,12 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         polyLineList.clear()
 
+//        円や線の追加
         for ((index,j) in sortedRouteLists.withIndex()){
 
-            val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
-            val radius = 400.0// 10km
+//            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
+            val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            val radius = 400.0// 400ｍ
             circlesList.add(
                 googleMap.addCircle(
                     CircleOptions()
@@ -299,13 +308,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             )
 
 
-
+//            線の追加 設定するときに消すことが出来るようにリストに保存をしておく
             if (index < routeLists.size - 1){
                 polyLineList.add(
                     googleMap.addPolyline(
                         PolylineOptions()
-                            .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
-                            .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
+                            .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 1つ目
+                            .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 次のルート
                             .color(Color.BLUE)                   // 線の色
                             .width(8f)                          // 線の太さ
                     )
@@ -322,12 +331,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         i: RouteListDateClass?,
         index: Int?
     ) {
-//        val imageButtonId = ArrayList<Int>()
-//        imageButtonId.add(ViewCompat.generateViewId())
-
+//        新規のVIEWを作成
         val v: View = layoutInflater.inflate(R.layout.item_course_edit_date, null)
-//        v.id = imageButtonId.last()
 
+//        ボタンを押されたときの設定を追加
         v.findViewById<Button>(R.id.itemEditAddButton).setOnClickListener() {
             addNLinearLayOutRouteItem(
                 editAddRouteLiniurLayout,
@@ -336,6 +343,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
+//        ルートのラインを設定する 最初と最後の部分で表示させるものを指定する
         if (i?.start == true) {
             v.findViewById<View>(R.id.itemEditTopLineView).visibility = INVISIBLE
         }
@@ -344,11 +352,12 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             v.findViewById<Button>(R.id.itemEditAddButton).visibility = INVISIBLE
         }
 
+//        テキストの表示
         if(!i?.placeLovalLanguageName.isNullOrBlank()){
             v.findViewById<EditText>(R.id.itemEditRouteEditText).setText(i?.placeLovalLanguageName)
         }
 
-
+//        追加ボタンを押したときの動作、途中で組み込むためにインデックスを指定する。
         if (index != null) {
             editAddRouteLiniurLayout.addView(v, index)
         } else {
@@ -361,7 +370,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap = gMap
         //        ツールバーの表示
         googleMap.uiSettings.isMapToolbarEnabled = true
-
+//          自分の位置の表示
         googleMap.isMyLocationEnabled = true
 
         //                現在地の表示
