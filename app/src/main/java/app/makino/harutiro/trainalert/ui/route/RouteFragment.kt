@@ -60,7 +60,7 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
 
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
         for(i in realmResalt){
-            Log.d("debag3",i.routeName)
+            Log.d("debag3",i.toString())
             if(i.routeList !=null ){
                 for(j in i.routeList!!){
                     Log.d("debag3",j.placeName)

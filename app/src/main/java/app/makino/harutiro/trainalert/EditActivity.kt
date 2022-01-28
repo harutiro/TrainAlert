@@ -87,6 +87,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
 
             findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
+            findViewById<Switch>(R.id.editSwichi).isChecked = realmResalt?.alertCheck == true
+            findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked = realmResalt?.timeAllDayCheck == true
+            findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked = realmResalt?.weekEveryDay == true
+            findViewById<ToggleButton>(R.id.editSundayButton).isChecked = realmResalt?.weekSun == true
+            findViewById<ToggleButton>(R.id.editMondayButton).isChecked = realmResalt?.weekMon == true
+            findViewById<ToggleButton>(R.id.editTuesdayButton).isChecked = realmResalt?.weekTue == true
+            findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked = realmResalt?.weekWed == true
+            findViewById<ToggleButton>(R.id.editThursdayButton).isChecked = realmResalt?.weekThe == true
+            findViewById<ToggleButton>(R.id.editFridayButton).isChecked = realmResalt?.weekFri == true
+            findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked = realmResalt?.weekSat == true
+            findViewById<EditText>(R.id.editArrivalEditText).setText(realmResalt?.timeArriva)
+            findViewById<EditText>(R.id.editDepartureEditText).setText(realmResalt?.timeDeparture)
+
 
             if (realmResalt != null) {
                 for (i in realmResalt.routeList?.sortedBy { it.indexCount }!!) {
