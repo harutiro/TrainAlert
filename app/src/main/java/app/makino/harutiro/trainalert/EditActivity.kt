@@ -49,6 +49,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var routeLists = ArrayList<RouteListDateClass>()
 
+    val circlesList = ArrayList<Circle>()
+    val polyLineList = ArrayList<Polyline>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +82,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
 
+//            ※円や線のマップ関係の初期設定はonMapReadyで行う。
             findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
 
             if (realmResalt != null) {
@@ -88,55 +92,14 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        val circlesList = ArrayList<Circle>()
-        val polyLineList = ArrayList<Polyline>()
+
 
         findViewById<Button>(R.id.editSearchButton).setOnClickListener{
             Snackbar.make(findViewById(android.R.id.content),"検索中", Snackbar.LENGTH_SHORT).show()
 
             searchRouteList(editAddRouteLiniurLayout)
             Handler(Looper.getMainLooper()).postDelayed({
-
-                val sortedRouteLists = routeLists.sortedBy { it.indexCount }
-                for(i in circlesList){
-                    i.remove()
-                }
-                circlesList.clear()
-                for(i in polyLineList){
-                    i.remove()
-                }
-                polyLineList.clear()
-
-                for ((index,j) in sortedRouteLists.withIndex()){
-
-                    val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
-                    val radius = 400.0// 10km
-                    circlesList.add(
-                        googleMap.addCircle(
-                            CircleOptions()
-                                .center(latLng)          // 円の中心位置
-                                .radius(radius)          // 半径 (メートル単位)
-                                .strokeColor(Color.BLUE) // 線の色
-                                .strokeWidth(2f)         // 線の太さ
-                                .fillColor(0x400080ff)   // 円の塗りつぶし色
-                        )
-                    )
-
-
-
-                    if (index < routeLists.size - 1){
-                        polyLineList.add(
-                            googleMap.addPolyline(
-                                PolylineOptions()
-                                    .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
-                                    .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
-                                    .color(Color.BLUE)                   // 線の色
-                                    .width(8f)                          // 線の太さ
-                            )
-                        )
-                    }
-
-                }
+                routeAdd()
             },5000)
 
 
@@ -309,6 +272,49 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    fun routeAdd(){
+        val sortedRouteLists = routeLists.sortedBy { it.indexCount }
+        for(i in circlesList){
+            i.remove()
+        }
+        circlesList.clear()
+        for(i in polyLineList){
+            i.remove()
+        }
+        polyLineList.clear()
+
+        for ((index,j) in sortedRouteLists.withIndex()){
+
+            val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
+            val radius = 400.0// 10km
+            circlesList.add(
+                googleMap.addCircle(
+                    CircleOptions()
+                        .center(latLng)          // 円の中心位置
+                        .radius(radius)          // 半径 (メートル単位)
+                        .strokeColor(Color.BLUE) // 線の色
+                        .strokeWidth(2f)         // 線の太さ
+                        .fillColor(0x400080ff)   // 円の塗りつぶし色
+                )
+            )
+
+
+
+            if (index < routeLists.size - 1){
+                polyLineList.add(
+                    googleMap.addPolyline(
+                        PolylineOptions()
+                            .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 東京駅
+                            .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 東京駅
+                            .color(Color.BLUE)                   // 線の色
+                            .width(8f)                          // 線の太さ
+                    )
+                )
+            }
+
+        }
+    }
+
 
 
     fun addNLinearLayOutRouteItem(
@@ -369,6 +375,11 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             val osakaStation = LatLng(location!!.latitude, location.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 16.0f))
         }
+
+//        初期のルートの線や円リストの追加
+        val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+        routeLists.addAll(realmResalt?.routeList!!)
+        routeAdd()
     }
 
 }
