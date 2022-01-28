@@ -104,12 +104,12 @@ class LocationService : Service() {
             baseContext,
             0,
             test_intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         ) //インテントをペンディングインテントに組み込む
 
         //通常のタップでMainに飛ぶ通知
         val intent = Intent(this, MainActivity::class.java).apply {}
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
 //        通知の作成
         val notification2 = NotificationCompat.Builder(this, "casareal_chanel1")
@@ -177,7 +177,7 @@ class LocationService : Service() {
         }
 
         val openIntent = Intent(this, MainActivity::class.java).let {
-            PendingIntent.getActivity(this, 0, it, 0)
+            PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
         }
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
