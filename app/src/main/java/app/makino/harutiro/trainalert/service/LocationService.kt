@@ -216,6 +216,8 @@ class LocationService : Service() {
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝距離計算
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
+        var isAlarming = false
+
         var updatedCount = 0
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
@@ -239,12 +241,15 @@ class LocationService : Service() {
 
                         if (distance != null) {
                             if(distance <= 0.600){
-                                if(isBluetoothHeadsetConnected || isEarphoneConnected){
+
+                                if((isBluetoothHeadsetConnected || isEarphoneConnected) && isAlarming ){
                                     notificationManager.notify(99, notification2)
                                 }else{
                                     notificationManager.notify(102, notification3)
-
                                 }
+
+                                isAlarming = false
+
 
 //                                realm.executeTransaction {
 //                                    val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
@@ -255,6 +260,8 @@ class LocationService : Service() {
 //                                        new?.routeNumber = i.routeNumber + 1
 //                                    }
 //                                }
+                            }else{
+                                isAlarming = true
                             }
                         }
                     }
