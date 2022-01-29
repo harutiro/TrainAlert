@@ -48,7 +48,7 @@ class MapFragment : Fragment() {
 
 //                        カメラ移動
             val osakaStation = LatLng(location!!.latitude, location.longitude)
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 16.0f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
         }
 
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
@@ -57,7 +57,7 @@ class MapFragment : Fragment() {
         for (i in realmResalt){
             for ((index,j) in i.routeList!!.withIndex()){
                 val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
-                val radius = 400.0// 10km
+                val radius = 800.0// 10km
                 googleMap.addCircle(
                     CircleOptions()
                         .center(latLng)          // 円の中心位置

@@ -311,7 +311,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
-            val radius = 400.0// 400ｍ
+            val radius = 800.0// 400ｍ
             circlesList.add(
                 googleMap.addCircle(
                     CircleOptions()
@@ -398,7 +398,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //                        カメラ移動
             val osakaStation = LatLng(location!!.latitude, location.longitude)
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 16.0f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
         }
 
 //        初期のルートの線や円リストの追加

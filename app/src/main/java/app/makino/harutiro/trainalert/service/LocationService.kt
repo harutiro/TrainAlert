@@ -237,7 +237,7 @@ class LocationService : Service() {
                         }
 
                         if (distance != null) {
-                            if(distance <= 0.200){
+                            if(distance <= 0.600){
                                 if(isBluetoothHeadsetConnected || isEarphoneConnected){
                                     notificationManager.notify(99, notification2)
                                 }else{
