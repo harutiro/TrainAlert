@@ -30,6 +30,11 @@ import okhttp3.internal.notify
 import android.content.BroadcastReceiver
 import android.os.*
 import android.app.PendingIntent
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothProfile
+import android.content.IntentFilter
 import android.widget.Toast
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -39,6 +44,8 @@ import java.util.*
 class LocationService : Service() {
     companion object {
         const val CHANNEL_ID = "777"
+        const val MONITOR_HEADSET_SERVICE_ID = 72
+        const val MONITOR_HEADSET_NOTIFY_ID = 69
     }
 
     private val realm by lazy {
@@ -49,16 +56,28 @@ class LocationService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
+//　　　　イヤホン取得部分
+    private var currentBluetoothHeadset: BluetoothHeadset? = null
+    private var isBluetoothHeadsetConnected = false
+    private var isEarphoneConnected = false
+
     override fun onCreate() {
         super.onCreate()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
-    val vibrator: Vibrator? = null
-
 
     @SuppressLint("NewApi")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+//        =====================イヤホン装着状態の確認
+        registerReceiver(broadcastReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
+        registerReceiver(broadcastReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        registerReceiver(broadcastReceiver, monitorHeadsetFilter)
+        bluetoothAdapter.getProfileProxy(this, bluetoothPolicyListener, BluetoothProfile.HEADSET)
+
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝通知部分
 //        マネージャーのインスタンス化
@@ -117,7 +136,7 @@ class LocationService : Service() {
             .setContentTitle("title")
             .setContentText("message")
             .setPriority(NotificationCompat.PRIORITY_HIGH) // ② 通知の重要度
-            .setCategory(NotificationCompat.CATEGORY_ALARM) // ③ 通知のカテゴリ
+            .setCategory(NotificationCompat.CATEGORY_EVENT) // ③ 通知のカテゴリ
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setFullScreenIntent(pendingIntent, true)
             .setVibrate(longArrayOf(0,1000,0,1000))
@@ -128,6 +147,67 @@ class LocationService : Service() {
             )
             .build()
         notification2.flags = Notification.FLAG_ONLY_ALERT_ONCE or Notification.FLAG_NO_CLEAR or Notification.FLAG_INSISTENT
+
+
+        // カテゴリー名（通知設定画面に表示される情報）
+        val nonEarName = "イヤホンがないときのアラーム"
+        // システムに登録するChannelのID
+        val nonEarId = "TrainNonEarAlertChannel"
+        // 通知の詳細情報（通知設定画面に表示される情報）
+        val nonEarNotifyDescription = "アラームの詳しい設定を行います"
+
+        // Channelの取得と生成
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&notificationManager.getNotificationChannel(nonEarId) == null) {
+//            チャンネルの重要度の設定
+            val mChannel = NotificationChannel(nonEarId, nonEarName, NotificationManager.IMPORTANCE_HIGH)
+//            通知音をなくす
+            mChannel.setSound(null, null)
+//            通知チャンネルの詳細表示
+            mChannel.description = nonEarNotifyDescription
+//            バイブの許可
+            mChannel.enableVibration(true)
+//            ？？？
+            mChannel.canShowBadge();
+//            LEDの許可
+            mChannel.enableLights(true);
+//            ？？？
+            mChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE;
+//            ？？？
+            mChannel.setShowBadge(true);
+//            チャンネルの追加
+            notificationManager.createNotificationChannel(mChannel)
+        }
+
+        //通知にタップで反応するレシーバーを作成
+        val test_intent1 = Intent(this,StopAlertRecever::class.java) //空のインテントを準備
+        val test_pendingIntent1 = PendingIntent.getBroadcast(
+            baseContext,
+            0,
+            test_intent1,
+            PendingIntent.FLAG_MUTABLE
+        ) //インテントをペンディングインテントに組み込む
+
+        //通常のタップでMainに飛ぶ通知
+        val intent1 = Intent(this, MainActivity::class.java).apply {}
+        val pendingIntent1: PendingIntent = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_IMMUTABLE)
+
+//        通知の作成
+        val notification3 = NotificationCompat.Builder(this, nonEarId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("title")
+            .setContentText("message")
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // ② 通知の重要度
+            .setCategory(NotificationCompat.CATEGORY_ALARM) // ③ 通知のカテゴリ
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setFullScreenIntent(pendingIntent1, true)
+            .setVibrate(longArrayOf(0,1000,0,1000))
+            .addAction(  // 4. 「応答」ボタンを追加
+                R.drawable.false_bell,
+                "止める",
+                test_pendingIntent1
+            )
+            .build()
+        notification3.flags = Notification.FLAG_ONLY_ALERT_ONCE or Notification.FLAG_NO_CLEAR or Notification.FLAG_INSISTENT
 
 
 
@@ -158,7 +238,12 @@ class LocationService : Service() {
 
                         if (distance != null) {
                             if(distance <= 0.200){
-                                notificationManager.notify(99, notification2)
+                                if(isBluetoothHeadsetConnected || isEarphoneConnected){
+                                    notificationManager.notify(99, notification2)
+                                }else{
+                                    notificationManager.notify(102, notification3)
+
+                                }
 
                                 realm.executeTransaction {
                                     val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
@@ -207,6 +292,8 @@ class LocationService : Service() {
         super.onDestroy()
         stopLocationUpdates()
         stopSelf()
+        unregisterReceiver(broadcastReceiver)
+
     }
 
     @SuppressLint("MissingPermission")
@@ -264,4 +351,71 @@ class LocationService : Service() {
     fun deg2rad(degrees: Double): Double {
         return degrees * (Math.PI / 180f)
     }
+
+//    ＝＝＝＝＝＝＝＝＝＝＝イヤホン取得部分
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action ?: return
+            when (action) {
+                Intent.ACTION_HEADSET_PLUG -> {
+                    Log.d("debag", "Intent.ACTION_HEADSET_PLUG")
+                    val state = intent.getIntExtra("state", -1)
+                    if (state == 0) {
+                        // ヘッドセットが装着されていない・外された
+                        Log.d("debag", "😊")
+                    } else if (state > 0) {
+                        // イヤホン・ヘッドセット(マイク付き)が装着された
+                        Log.d("debag", "❤️")
+                    }
+
+                    isEarphoneConnected = state > 0
+                }
+                BluetoothDevice.ACTION_ACL_CONNECTED    -> {
+                    Thread.sleep(2000)
+
+                    Log.d("debag", "Broadcast: ACTION_ACL_CONNECTED")
+                    if (currentBluetoothHeadset?.connectedDevices?.size ?: 0 > 0) {
+                        isBluetoothHeadsetConnected = true
+                        Log.d("debag", "★")
+
+                    }
+                }
+                BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
+                    Log.d("debag", "Broadcast: ACTION_ACL_DISCONNECTED")
+                    isBluetoothHeadsetConnected = false
+                    Log.d("debag", "😒")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private val bluetoothPolicyListener = object : BluetoothProfile.ServiceListener {
+        @SuppressLint("MissingPermission")
+        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile?) {
+            if (profile == BluetoothProfile.HEADSET) {
+                Log.d("debag", "BluetoothProfile onServiceConnected")
+
+                currentBluetoothHeadset = proxy as BluetoothHeadset
+                isBluetoothHeadsetConnected = (currentBluetoothHeadset?.connectedDevices?.size ?: 0 > 0)
+            }
+        }
+
+        override fun onServiceDisconnected(profile: Int) {
+            if (profile == BluetoothProfile.HEADSET) {
+                Log.d("debag", "BluetoothProfile onServiceDisconnected")
+
+                currentBluetoothHeadset = null
+            }
+        }
+    }
+
+
+    private val monitorHeadsetFilter = IntentFilter().apply {
+        addAction(AudioManager.ACTION_HEADSET_PLUG)
+        addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
+        addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+    }
+
 }
