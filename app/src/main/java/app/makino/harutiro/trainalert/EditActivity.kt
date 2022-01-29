@@ -116,7 +116,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             searchRouteList(editAddRouteLiniurLayout)
             Handler(Looper.getMainLooper()).postDelayed({
                 routeAdd()
-            },5000)
+            },15000)
 
 
 
@@ -172,7 +172,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 }else{
                     Snackbar.make(findViewById(android.R.id.content),"保存ができませんでした。", Snackbar.LENGTH_SHORT).show()
                 }
-            }, 5000)
+            }, 15000)
         }
     }
 

@@ -180,6 +180,7 @@ class LocationService : Service() {
 
         //通知にタップで反応するレシーバーを作成
         val test_intent1 = Intent(this,StopAlertRecever::class.java) //空のインテントを準備
+        test_intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val test_pendingIntent1 = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -245,15 +246,15 @@ class LocationService : Service() {
 
                                 }
 
-                                realm.executeTransaction {
-                                    val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
-
-                                    if(i.routeList!!.size <= i.routeNumber + 1){
-                                        new?.routeNumber = 0
-                                    }else{
-                                        new?.routeNumber = i.routeNumber + 1
-                                    }
-                                }
+//                                realm.executeTransaction {
+//                                    val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
+//
+//                                    if(i.routeList!!.size <= i.routeNumber + 1){
+//                                        new?.routeNumber = 0
+//                                    }else{
+//                                        new?.routeNumber = i.routeNumber + 1
+//                                    }
+//                                }
                             }
                         }
                     }
