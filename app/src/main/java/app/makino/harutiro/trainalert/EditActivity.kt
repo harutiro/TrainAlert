@@ -60,6 +60,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        //            TODO:STRINGに登録
+        Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
+
         //マップとフラグメントを結び透ける部分
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.editMapFragment) as SupportMapFragment
@@ -200,8 +203,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //               ＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋＋PlaceID取得部分
 //                APIキーの指定
-//            TODO:STRINGに登録
-            Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
+
 //                検索ワードの取得
             val localLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
 //                Token作成
