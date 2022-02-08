@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -53,12 +55,14 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
         createNotificationChannel()
 
-        val intent = Intent(this, LocationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        }else{
-            startService(intent)
-        }
+//        val intent = Intent(this, LocationService::class.java)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(intent)
+//        }else{
+//            startService(intent)
+//        }
+
+        Log.d("debag10","onCreateがきた")
     }
 
     private fun requestPermission() {
@@ -96,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
             val channel = NotificationChannel(
                 LocationService.CHANNEL_ID,
                 "お知らせ",
