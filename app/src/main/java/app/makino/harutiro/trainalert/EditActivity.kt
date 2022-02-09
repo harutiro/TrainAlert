@@ -39,19 +39,21 @@ import com.google.android.material.snackbar.Snackbar
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
-//    データ受け渡し
+    //    データ受け渡し
     var id: String? = ""
 
-//    レルム
+    //    レルム
     private val realm by lazy {
         Realm.getDefaultInstance()
     }
 
-//    GoogleMapの操作ができるやつ
+    //    GoogleMapの操作ができるやつ
     private lateinit var googleMap: GoogleMap
-//    ルートのリストを保存しておく部分
+
+    //    ルートのリストを保存しておく部分
     var routeLists = ArrayList<RouteListDateClass>()
-//    マップの丸や円を消去するために残しておくリスト
+
+    //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
 
@@ -92,15 +94,24 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
             findViewById<Switch>(R.id.editSwichi).isChecked = realmResalt?.alertCheck == true
-            findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked = realmResalt?.timeAllDayCheck == true
-            findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked = realmResalt?.weekEveryDay == true
-            findViewById<ToggleButton>(R.id.editSundayButton).isChecked = realmResalt?.weekSun == true
-            findViewById<ToggleButton>(R.id.editMondayButton).isChecked = realmResalt?.weekMon == true
-            findViewById<ToggleButton>(R.id.editTuesdayButton).isChecked = realmResalt?.weekTue == true
-            findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked = realmResalt?.weekWed == true
-            findViewById<ToggleButton>(R.id.editThursdayButton).isChecked = realmResalt?.weekThe == true
-            findViewById<ToggleButton>(R.id.editFridayButton).isChecked = realmResalt?.weekFri == true
-            findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked = realmResalt?.weekSat == true
+            findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked =
+                realmResalt?.timeAllDayCheck == true
+            findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked =
+                realmResalt?.weekEveryDay == true
+            findViewById<ToggleButton>(R.id.editSundayButton).isChecked =
+                realmResalt?.weekSun == true
+            findViewById<ToggleButton>(R.id.editMondayButton).isChecked =
+                realmResalt?.weekMon == true
+            findViewById<ToggleButton>(R.id.editTuesdayButton).isChecked =
+                realmResalt?.weekTue == true
+            findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked =
+                realmResalt?.weekWed == true
+            findViewById<ToggleButton>(R.id.editThursdayButton).isChecked =
+                realmResalt?.weekThe == true
+            findViewById<ToggleButton>(R.id.editFridayButton).isChecked =
+                realmResalt?.weekFri == true
+            findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked =
+                realmResalt?.weekSat == true
             findViewById<EditText>(R.id.editArrivalEditText).setText(realmResalt?.timeArriva)
             findViewById<EditText>(R.id.editDepartureEditText).setText(realmResalt?.timeDeparture)
 
@@ -113,14 +124,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝編集したるーとを手動で反映させる部分
-        findViewById<Button>(R.id.editSearchButton).setOnClickListener{
-            Snackbar.make(findViewById(android.R.id.content),"検索中", Snackbar.LENGTH_SHORT).show()
+        findViewById<Button>(R.id.editSearchButton).setOnClickListener {
+            Snackbar.make(findViewById(android.R.id.content), "検索中", Snackbar.LENGTH_SHORT).show()
 
             searchRouteList(editAddRouteLiniurLayout)
             Handler(Looper.getMainLooper()).postDelayed({
                 routeAdd()
-            },15000)
-
+            }, 15000)
 
 
         }
@@ -129,53 +139,50 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
         findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener {
 
-            Snackbar.make(findViewById(android.R.id.content),"保存中", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(findViewById(android.R.id.content), "保存中", Snackbar.LENGTH_SHORT).show()
 
 //            ルートの緯度経度などのリストを取得する
             searchRouteList(editAddRouteLiniurLayout)
 
-//            PlaceIDの取得のために５秒ほど送らせてから保存をする
-            Handler(Looper.getMainLooper()).postDelayed({
-//                住所の配列が０でないとき（０のときは保存できなかったと仮定する）
-                val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+            realm.executeTransaction {
 
-                if (routeLists.size == editAddRouteLiniurLayout.size){
-                    realm.executeTransaction {
+                var new: RouteDateClass? = null
 
-                        val new = if (id.isNullOrEmpty()) {
-                            realm.createObject(RouteDateClass::class.java, UUID.randomUUID().toString())
-                        } else {
-                            realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
-                        }
-
-                        new?.timeAllDayCheck = findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked
-                        new?.timeDeparture =
-                            findViewById<EditText>(R.id.editDepartureEditText).text.toString()
-                        new?.timeArriva =
-                            findViewById<EditText>(R.id.editArrivalEditText).text.toString()
-                        new?.weekEveryDay = findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked
-                        new?.weekMon = findViewById<ToggleButton>(R.id.editMondayButton).isChecked
-                        new?.weekTue = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
-                        new?.weekWed = findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked
-                        new?.weekThe = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
-                        new?.weekFri = findViewById<ToggleButton>(R.id.editFridayButton).isChecked
-                        new?.weekSat = findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked
-                        new?.weekSun = findViewById<ToggleButton>(R.id.editSundayButton).isChecked
-
-                        new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
-                        new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
-
-                        new?.routeList?.clear()
-                        new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
-
-                    }
-
-                    finish()
-                    Snackbar.make(findViewById(android.R.id.content),"保存ができました。", Snackbar.LENGTH_SHORT).show()
-                }else{
-                    Snackbar.make(findViewById(android.R.id.content),"保存ができませんでした。", Snackbar.LENGTH_SHORT).show()
+                if (id.isNullOrEmpty()) {
+                    id = UUID.randomUUID().toString()
+                    new = realm.createObject(RouteDateClass::class.java, id)
+                } else {
+                    new = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
                 }
-            }, 15000)
+
+                new?.timeAllDayCheck = findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked
+                new?.timeDeparture =
+                    findViewById<EditText>(R.id.editDepartureEditText).text.toString()
+                new?.timeArriva =
+                    findViewById<EditText>(R.id.editArrivalEditText).text.toString()
+                new?.weekEveryDay = findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked
+                new?.weekMon = findViewById<ToggleButton>(R.id.editMondayButton).isChecked
+                new?.weekTue = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
+                new?.weekWed = findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked
+                new?.weekThe = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
+                new?.weekFri = findViewById<ToggleButton>(R.id.editFridayButton).isChecked
+                new?.weekSat = findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked
+                new?.weekSun = findViewById<ToggleButton>(R.id.editSundayButton).isChecked
+
+                new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
+                new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
+
+//                new?.routeList?.clear()
+//                new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
+
+            }
+
+            finish()
+            Snackbar.make(
+                findViewById(android.R.id.content),
+                "保存ができました。",
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -186,8 +193,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         var indexCount = 0
         for (i in editAddRouteLiniurLayout) {
 
-            Log.d("debag6",i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString())
-            Log.d("debag6",indexCount.toString())
+            Log.d("debag6", i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString())
+            Log.d("debag6", indexCount.toString())
 //            保存する要素を作成
             val saveDate = RouteListDateClass()
 //            ルートのラインが見えていないところで最初か最後かを判断する。
@@ -205,7 +212,8 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //                APIキーの指定
 
 //                検索ワードの取得
-            val localLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
+            val localLanguageName =
+                i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
 //                Token作成
             val token = AutocompleteSessionToken.newInstance()
 //                PlaceIDのリクエストするビルダー作成
@@ -262,8 +270,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                                     saveDate.placeLon = place.latLng.longitude
 
 //                                        重複保存を回避
-                                    if(!routeLists.any { it.placeName == saveDate.placeName }){
+                                    if (!routeLists.any { it.placeName == saveDate.placeName }) {
                                         routeLists.add(saveDate)
+                                        realm.executeTransaction{
+                                            val new = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+
+                                            new?.routeList?.add(saveDate)
+                                        }
                                     }
 
                                     return@addOnSuccessListener
@@ -294,22 +307,22 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun routeAdd(){
+    fun routeAdd() {
 //        保存されているリストが順番道理ではないため、順番に並べ替えられたものを新規作成
         val sortedRouteLists = routeLists.sortedBy { it.indexCount }
 
 //        すでにある円や線を消去
-        for(i in circlesList){
+        for (i in circlesList) {
             i.remove()
         }
         circlesList.clear()
-        for(i in polyLineList){
+        for (i in polyLineList) {
             i.remove()
         }
         polyLineList.clear()
 
 //        円や線の追加
-        for ((index,j) in sortedRouteLists.withIndex()){
+        for ((index, j) in sortedRouteLists.withIndex()) {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
@@ -327,12 +340,22 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 //            線の追加 設定するときに消すことが出来るようにリストに保存をしておく
-            if (index < routeLists.size - 1){
+            if (index < routeLists.size - 1) {
                 polyLineList.add(
                     googleMap.addPolyline(
                         PolylineOptions()
-                            .add(LatLng(sortedRouteLists[index].placeLat, sortedRouteLists[index].placeLon)) // 1つ目
-                            .add(LatLng(sortedRouteLists[index + 1].placeLat,sortedRouteLists[index +1].placeLon)) // 次のルート
+                            .add(
+                                LatLng(
+                                    sortedRouteLists[index].placeLat,
+                                    sortedRouteLists[index].placeLon
+                                )
+                            ) // 1つ目
+                            .add(
+                                LatLng(
+                                    sortedRouteLists[index + 1].placeLat,
+                                    sortedRouteLists[index + 1].placeLon
+                                )
+                            ) // 次のルート
                             .color(Color.BLUE)                   // 線の色
                             .width(8f)                          // 線の太さ
                     )
@@ -341,7 +364,6 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
         }
     }
-
 
 
     fun addNLinearLayOutRouteItem(
@@ -371,7 +393,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 //        テキストの表示
-        if(!i?.placeLovalLanguageName.isNullOrBlank()){
+        if (!i?.placeLovalLanguageName.isNullOrBlank()) {
             v.findViewById<EditText>(R.id.itemEditRouteEditText).setText(i?.placeLovalLanguageName)
         }
 
@@ -405,7 +427,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //        初期のルートの線や円リストの追加
         val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
-        if(!id.isNullOrEmpty()){
+        if (!id.isNullOrEmpty()) {
             routeLists.addAll(realmResalt?.routeList!!)
             routeAdd()
         }

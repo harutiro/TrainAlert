@@ -49,7 +49,8 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
 //        itemとレイアウトの直接の結びつけ
         holder.itemRouteNameTextView.text = person?.routeName
 
-        holder.itemRouteNextStationTextView.text = person?.routeList?.get(person.routeNumber)?.placeLovalLanguageName
+//        holder.itemRouteNextStationTextView.text = person?.routeList?.get(person.routeNumber)?.placeLovalLanguageName
+
 
         holder.itemRouteAlertSwitch.isChecked = person?.alertCheck!!
 
