@@ -240,8 +240,7 @@ class LocationService : Service() {
                             Log.d("debag3","$distance")
                         }
 
-                        if (distance != null && routeDateUUID.isEmpty() && routeListDateUUID.isEmpty()) {
-                            if(distance <= 0.600){
+                        if (distance!! <= 0.600 && routeDateUUID.isEmpty() && routeListDateUUID.isEmpty()) {
 
                                 if((isBluetoothHeadsetConnected || isEarphoneConnected) ){
                                     notificationManager.notify(99, notification2)
@@ -252,25 +251,19 @@ class LocationService : Service() {
                                 routeDateUUID = i.id.toString()
                                 routeListDateUUID = j.id.toString()
 
-
-//                                realm.executeTransaction {
-//                                    val new = realm.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
-//
-//                                    if(i.routeList!!.size <= i.routeNumber + 1){
-//                                        new?.routeNumber = 0
-//                                    }else{
-//                                        new?.routeNumber = i.routeNumber + 1
-//                                    }
-//                                }
-                            }
-                            if (distance > 0.600 && routeDateUUID == i.id && routeListDateUUID == j.id) {
-                                routeDateUUID = ""
-                                routeListDateUUID = ""
-                            }
                         }
 
+                        if (distance > 0.600 && routeDateUUID == i.id && routeListDateUUID == j.id) {
+                            routeDateUUID = ""
+                            routeListDateUUID = ""
+                        }
+
+                        Log.d("debag8",i.id.toString() )
                         Log.d("debag8",routeDateUUID )
+                        Log.d("debag8",j.id.toString() )
                         Log.d("debag8",routeListDateUUID )
+
+
                     }
                 }
             }
