@@ -55,7 +55,12 @@ class MapFragment : Fragment() {
 
 //        通知の範囲をお知らせ
         for (i in realmResalt){
-            for ((index,j) in i.routeList!!.withIndex()){
+            val sortByRouteList = i.routeList?.sortedBy { it.indexCount }
+
+            for ((index,j) in sortByRouteList?.withIndex()!!){
+                Log.d("debag9",j.placeLovalLanguageName)
+                Log.d("debag9",j.indexCount.toString())
+
                 val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
                 val radius = 800.0// 10km
                 googleMap.addCircle(
@@ -67,14 +72,16 @@ class MapFragment : Fragment() {
                         .fillColor(0x400080ff)   // 円の塗りつぶし色
                 )
 
-                if (index < i.routeList!!.size - 1)
-                googleMap.addPolyline(
-                    PolylineOptions()
-                        .add(LatLng(i.routeList!![index]?.placeLat ?: 0.0,i.routeList!![index]?.placeLon ?: 0.0 )) // 東京駅
-                        .add(LatLng(i.routeList!![index + 1]?.placeLat ?: 0.0,i.routeList!![index +1]?.placeLon ?: 0.0 )) // 東京駅
-                        .color(Color.BLUE)                   // 線の色
-                        .width(8f)                          // 線の太さ
-                )
+                if (index < i.routeList!!.size - 1){
+                    googleMap.addPolyline(
+                        PolylineOptions()
+                            .add(LatLng(sortByRouteList[index]?.placeLat ?: 0.0,sortByRouteList[index]?.placeLon ?: 0.0 )) // 東京駅
+                            .add(LatLng(sortByRouteList[index + 1]?.placeLat ?: 0.0,sortByRouteList[index +1]?.placeLon ?: 0.0 )) // 東京駅
+                            .color(Color.BLUE)                   // 線の色
+                            .width(8f)                          // 線の太さ
+                    )
+                }
+
             }
         }
 
