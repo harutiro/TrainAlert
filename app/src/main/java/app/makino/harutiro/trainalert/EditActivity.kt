@@ -139,9 +139,17 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
             if (realmResalt != null) {
-                for (i in realmResalt.routeList?.sortedBy { it.indexCount }!!) {
-                    addNLinearLayOutRouteItem(editAddRouteLiniurLayout, i, null)
+                if(realmResalt.routeList?.size != 0){
+                    for (i in realmResalt.routeList?.sortedBy { it.indexCount }!!) {
+                        addNLinearLayOutRouteItem(editAddRouteLiniurLayout, i, null)
+                    }
+                }else{
+                    for (i in realmResalt.routeListBackUp?.sortedBy { it.indexCount }!!) {
+                        addNLinearLayOutRouteItem(editAddRouteLiniurLayout, i, null)
+                        Log.d("debag9",i.indexCount.toString())
+                    }
                 }
+
             }
         }
 
@@ -218,7 +226,30 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 new?.alertCheck = editSwichi.isChecked
 
                 new?.routeList?.clear()
+                new?.routeListBackUp?.clear()
                 new?.routeAllNumber = editAddRouteLiniurLayout.size
+
+//                もし保存中に失敗したときにこちらが呼び出されるようにする。
+                var index = 0
+                for (i in editAddRouteLiniurLayout){
+                    val saveDate = RouteListDateClass()
+
+                    //            ルートのラインが見えていないところで最初か最後かを判断する。
+                    if (i.findViewById<View>(R.id.itemEditTopLineView).visibility != VISIBLE) {
+                        saveDate.start = true
+                    }
+                    if (i.findViewById<View>(R.id.itemEditButtomLineView).visibility != VISIBLE) {
+                        saveDate.end = true
+                    }
+                    //            保存する順番を残すために残しておく
+                    saveDate.indexCount = index
+                    index++
+                    //            名前を保存する
+                    saveDate.placeLovalLanguageName = i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString()
+
+                    new?.routeListBackUp?.add(saveDate)
+
+                }
 
 //                new?.routeList?.clear()
 //                new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
