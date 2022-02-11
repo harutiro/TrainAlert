@@ -62,6 +62,20 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        val editRouteName = findViewById<EditText>(R.id.editRouteName)
+        val editSwichi = findViewById<Switch>(R.id.editSwichi)
+        val editAllDayCheckBox = findViewById<CheckBox>(R.id.editAllDayCheckBox)
+        val editEverydayCheckBox = findViewById<CheckBox>(R.id.editEverydayCheckBox)
+        val editSundayButton = findViewById<ToggleButton>(R.id.editSundayButton)
+        val editMondayButton = findViewById<ToggleButton>(R.id.editMondayButton)
+        val editTuesdayButton = findViewById<ToggleButton>(R.id.editTuesdayButton)
+        val editWednesdayButton = findViewById<ToggleButton>(R.id.editWednesdayButton)
+        val editThursdayButton = findViewById<ToggleButton>(R.id.editThursdayButton)
+        val editFridayButton = findViewById<ToggleButton>(R.id.editFridayButton)
+        val editSaturdayButton = findViewById<ToggleButton>(R.id.editSaturdayButton)
+        val editArrivalEditText = findViewById<EditText>(R.id.editArrivalEditText)
+        val editDepartureEditText = findViewById<EditText>(R.id.editDepartureEditText)
+
         //            TODO:STRINGに登録
         Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
 
@@ -92,28 +106,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //            ※円や線のマップ関係の初期設定はonMapReadyで行う。
             val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
 
-            findViewById<EditText>(R.id.editRouteName).setText(realmResalt?.routeName)
-            findViewById<Switch>(R.id.editSwichi).isChecked = realmResalt?.alertCheck == true
-            findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked =
-                realmResalt?.timeAllDayCheck == true
-            findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked =
-                realmResalt?.weekEveryDay == true
-            findViewById<ToggleButton>(R.id.editSundayButton).isChecked =
-                realmResalt?.weekSun == true
-            findViewById<ToggleButton>(R.id.editMondayButton).isChecked =
-                realmResalt?.weekMon == true
-            findViewById<ToggleButton>(R.id.editTuesdayButton).isChecked =
-                realmResalt?.weekTue == true
-            findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked =
-                realmResalt?.weekWed == true
-            findViewById<ToggleButton>(R.id.editThursdayButton).isChecked =
-                realmResalt?.weekThe == true
-            findViewById<ToggleButton>(R.id.editFridayButton).isChecked =
-                realmResalt?.weekFri == true
-            findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked =
-                realmResalt?.weekSat == true
-            findViewById<EditText>(R.id.editArrivalEditText).setText(realmResalt?.timeArriva)
-            findViewById<EditText>(R.id.editDepartureEditText).setText(realmResalt?.timeDeparture)
+            editRouteName.setText(realmResalt?.routeName)
+            editSwichi.isChecked = realmResalt?.alertCheck == true
+            editAllDayCheckBox.isChecked = realmResalt?.timeAllDayCheck == true
+            editEverydayCheckBox.isChecked = realmResalt?.weekEveryDay == true
+            editSundayButton.isChecked = realmResalt?.weekSun == true
+            editMondayButton.isChecked = realmResalt?.weekMon == true
+            editTuesdayButton.isChecked = realmResalt?.weekTue == true
+            editWednesdayButton.isChecked = realmResalt?.weekWed == true
+            editThursdayButton.isChecked = realmResalt?.weekThe == true
+            editFridayButton.isChecked = realmResalt?.weekFri == true
+            editSaturdayButton.isChecked = realmResalt?.weekSat == true
+            editArrivalEditText.setText(realmResalt?.timeArriva)
+            editDepartureEditText.setText(realmResalt?.timeDeparture)
 
 
             if (realmResalt != null) {
@@ -141,6 +146,33 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             Snackbar.make(findViewById(android.R.id.content), "保存中", Snackbar.LENGTH_SHORT).show()
 
+//            error分岐
+//            routeListの空欄確認
+            for(i in editAddRouteLiniurLayout){
+                if(i.findViewById<EditText>(R.id.itemEditRouteEditText).text.toString().isNullOrEmpty()){
+                    Snackbar.make(findViewById(android.R.id.content), "出発地点に空欄があります", Snackbar.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            if(editRouteName.text.isNullOrEmpty()){
+                Snackbar.make(findViewById(android.R.id.content), "ルート名が空欄です", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            Log.d("debag9",editDepartureEditText.text.isNullOrEmpty().toString())
+            Log.d("debag9",editArrivalEditText.text.isNullOrEmpty().toString())
+            Log.d("debag9",editAllDayCheckBox.isChecked.toString())
+
+            if((editDepartureEditText.text.isNullOrEmpty() && !editAllDayCheckBox.isChecked)
+                || (editArrivalEditText.text.isNullOrEmpty() && !editAllDayCheckBox.isChecked)){
+                Snackbar.make(findViewById(android.R.id.content), "時間設定が正しくありません", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+
+
 //            ルートの緯度経度などのリストを取得する
             searchRouteList(editAddRouteLiniurLayout)
 
@@ -155,22 +187,20 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                     new = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
                 }
 
-                new?.timeAllDayCheck = findViewById<CheckBox>(R.id.editAllDayCheckBox).isChecked
-                new?.timeDeparture =
-                    findViewById<EditText>(R.id.editDepartureEditText).text.toString()
-                new?.timeArriva =
-                    findViewById<EditText>(R.id.editArrivalEditText).text.toString()
-                new?.weekEveryDay = findViewById<CheckBox>(R.id.editEverydayCheckBox).isChecked
-                new?.weekMon = findViewById<ToggleButton>(R.id.editMondayButton).isChecked
-                new?.weekTue = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
-                new?.weekWed = findViewById<ToggleButton>(R.id.editWednesdayButton).isChecked
-                new?.weekThe = findViewById<ToggleButton>(R.id.editThursdayButton).isChecked
-                new?.weekFri = findViewById<ToggleButton>(R.id.editFridayButton).isChecked
-                new?.weekSat = findViewById<ToggleButton>(R.id.editSaturdayButton).isChecked
-                new?.weekSun = findViewById<ToggleButton>(R.id.editSundayButton).isChecked
+                new?.timeAllDayCheck = editAllDayCheckBox.isChecked
+                new?.timeDeparture = editDepartureEditText.text.toString()
+                new?.timeArriva = editArrivalEditText.text.toString()
+                new?.weekEveryDay = editEverydayCheckBox.isChecked
+                new?.weekMon = editMondayButton.isChecked
+                new?.weekTue = editThursdayButton.isChecked
+                new?.weekWed = editWednesdayButton.isChecked
+                new?.weekThe = editThursdayButton.isChecked
+                new?.weekFri = editFridayButton.isChecked
+                new?.weekSat = editSaturdayButton.isChecked
+                new?.weekSun = editSundayButton.isChecked
 
-                new?.routeName = findViewById<EditText>(R.id.editRouteName).text.toString()
-                new?.alertCheck = findViewById<Switch>(R.id.editSwichi).isChecked
+                new?.routeName = editRouteName.text.toString()
+                new?.alertCheck = editSwichi.isChecked
 
 //                new?.routeList?.clear()
 //                new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
