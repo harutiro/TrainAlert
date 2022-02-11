@@ -1,5 +1,6 @@
 package app.makino.harutiro.trainalert.service
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
 import android.bluetooth.BluetoothAdapter
@@ -10,11 +11,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.*
 import android.util.Log
 import android.view.WindowManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -31,6 +36,8 @@ class LocationService : Service() {
         const val CHANNEL_ID = "777"
         const val MONITOR_HEADSET_SERVICE_ID = 72
         const val MONITOR_HEADSET_NOTIFY_ID = 69
+        private const val PERMISSION_REQUEST_CODE = 1234
+
     }
 
     private val realm by lazy {
@@ -332,6 +339,22 @@ class LocationService : Service() {
         addAction(AudioManager.ACTION_HEADSET_PLUG)
         addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
         addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+    }
+
+    private fun requestPermission():Boolean {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            val permissionCheckAccessFineLocation =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+
+            val permissionCheckAccessBackgroundLocation =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+            !(permissionCheckAccessBackgroundLocation != PackageManager.PERMISSION_GRANTED
+                    || permissionCheckAccessFineLocation != PackageManager.PERMISSION_GRANTED)
+        }else{
+            true
+        }
+
     }
 
 }

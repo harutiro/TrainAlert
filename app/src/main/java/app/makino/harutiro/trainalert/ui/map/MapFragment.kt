@@ -1,7 +1,9 @@
 package app.makino.harutiro.trainalert.ui.map
 
 import android.Manifest
+import android.Manifest.permission_group.LOCATION
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
 import android.location.Location
@@ -12,10 +14,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.MapFragmentRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
@@ -31,6 +36,10 @@ import io.realm.Realm
 
 
 class MapFragment : Fragment() {
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 1234
+    }
 
 
     private val realm by lazy {
@@ -50,19 +59,22 @@ class MapFragment : Fragment() {
         //        ツールバーの表示
         googleMap.uiSettings.isMapToolbarEnabled = true
 
-        googleMap.isMyLocationEnabled = true
+        if(requestPermission()){
+            googleMap.isMyLocationEnabled = true
 
-        //                現在地の表示
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            // Got last known location. In some rare situations this can be null.
-            Log.d("debag", "緯度:" + location?.latitude.toString())
-            Log.d("debag", "経度:" + location?.longitude.toString())
+            //                現在地の表示
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
 
 //                        カメラ移動
-            val osakaStation = LatLng(location!!.latitude, location.longitude)
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
         }
+
 
 //        通知の範囲をお知らせ
         for (i in realmResalt){
@@ -188,26 +200,38 @@ class MapFragment : Fragment() {
     }
 
 
-    fun parmission(){
-        val locationPermissionRequest = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                when {
-                    permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                        // Precise location access granted.
-                    }
-                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                        // Only approximate location access granted.
-                    } else -> {
-                    // No location access granted.
+    private fun requestPermission():Boolean {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            val permissionCheckAccessFineLocation =
+                ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+
+            val permissionCheckAccessBackgroundLocation =
+                ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+            if (permissionCheckAccessBackgroundLocation != PackageManager.PERMISSION_GRANTED
+                || permissionCheckAccessFineLocation != PackageManager.PERMISSION_GRANTED) {
+
+                // Android 6.0 のみ、該当パーミッションが許可されていない場合
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        requireActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                ) {
+                    ActivityCompat.requestPermissions(requireActivity(),
+                        arrayOf(
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                        ),
+                        PERMISSION_REQUEST_CODE
+                    )
                 }
-                }
+                return false
+            } else {
+                return true
             }
+        }else{
+            return true
         }
 
-        locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 }

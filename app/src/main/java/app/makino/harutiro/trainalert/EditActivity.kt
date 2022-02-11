@@ -1,8 +1,11 @@
 package app.makino.harutiro.trainalert
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -28,8 +31,11 @@ import io.realm.Realm
 import java.util.*
 import android.widget.LinearLayout
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.iterator
 import androidx.core.view.size
+import app.makino.harutiro.trainalert.ui.map.MapFragment
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -38,6 +44,10 @@ import com.google.android.material.snackbar.Snackbar
 
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 1234
+    }
 
     //    データ受け渡し
     var id: String? = ""
@@ -501,31 +511,78 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
         //        ツールバーの表示
         googleMap.uiSettings.isMapToolbarEnabled = true
-//          自分の位置の表示
-        googleMap.isMyLocationEnabled = true
 
-        //                現在地の表示
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            // Got last known location. In some rare situations this can be null.
-            Log.d("debag", "緯度:" + location?.latitude.toString())
-            Log.d("debag", "経度:" + location?.longitude.toString())
+        if(requestPermission()){
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {return}
+
+            //          自分の位置の表示
+            googleMap.isMyLocationEnabled = true
+
+            //                現在地の表示
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
 
 //                        カメラ移動
-            val osakaStation = LatLng(location!!.latitude, location.longitude)
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
         }
+
 
 //        初期のルートの線や円リストの追加
         val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
         if (!id.isNullOrEmpty()) {
             routeLists.addAll(realmResalt?.routeList!!)
             routeAdd()
+        }
+
+    }
+
+    private fun requestPermission():Boolean {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            val permissionCheckAccessFineLocation =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+
+            val permissionCheckAccessBackgroundLocation =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+            if (permissionCheckAccessBackgroundLocation != PackageManager.PERMISSION_GRANTED
+                || permissionCheckAccessFineLocation != PackageManager.PERMISSION_GRANTED) {
+
+                // Android 6.0 のみ、該当パーミッションが許可されていない場合
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                ) {
+                    ActivityCompat.requestPermissions(this,
+                        arrayOf(
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                        ),
+                        PERMISSION_REQUEST_CODE
+                    )
+                }
+                return false
+            } else {
+                return true
+            }
+        }else{
+            return true
         }
 
     }
