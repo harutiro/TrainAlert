@@ -338,6 +338,16 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                                 if (exception is ApiException) {
                                     Log.d("debag", "Place not found: ${exception.message}")
                                     val statusCode = exception.statusCode
+
+                                    realm.executeTransaction{
+                                        val new = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+
+                                        new?.routeAllNumber = 0
+                                    }
+
+                                    Toast.makeText(this, "保存に失敗しました", Toast.LENGTH_SHORT).show()
+
+
                                 }
                             }
 
@@ -348,6 +358,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (exception is ApiException) {
                         Log.e("debag", "Place not found: " + exception.statusCode)
 
+                        realm.executeTransaction{
+                            val new = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+
+                            new?.routeAllNumber = 0
+                        }
+
+                        Toast.makeText(this, "保存に失敗しました", Toast.LENGTH_SHORT).show()
                     }
                 }
 
