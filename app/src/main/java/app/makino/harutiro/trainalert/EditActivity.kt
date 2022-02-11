@@ -155,15 +155,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
 
+//            ルート名の空欄確認
             if(editRouteName.text.isNullOrEmpty()){
                 Snackbar.make(findViewById(android.R.id.content), "ルート名が空欄です", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            Log.d("debag9",editDepartureEditText.text.isNullOrEmpty().toString())
-            Log.d("debag9",editArrivalEditText.text.isNullOrEmpty().toString())
-            Log.d("debag9",editAllDayCheckBox.isChecked.toString())
-
+//            時間部分の保存の確認
             if((editDepartureEditText.text.isNullOrEmpty() && !editAllDayCheckBox.isChecked)
                 || (editArrivalEditText.text.isNullOrEmpty() && !editAllDayCheckBox.isChecked)){
                 Snackbar.make(findViewById(android.R.id.content), "時間設定が正しくありません", Snackbar.LENGTH_SHORT).show()
