@@ -41,12 +41,16 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         val rView = view.findViewById<RecyclerView>(R.id.routeRV)
         adapter = RouteRecycleViewAdapter(requireContext(), object: RouteRecycleViewAdapter.OnItemClickListner{
             override fun onItemClick(item: RouteDateClass) {
-                // SecondActivityに遷移するためのIntent
-                val intent = Intent(context, EditActivity::class.java)
-                // RecyclerViewの要素をタップするとintentによりSecondActivityに遷移する
-                // また，要素のidをSecondActivityに渡す
-                intent.putExtra("id", item.id)
-                startActivity(intent)
+                if(item.routeAllNumber <= item.routeList?.size!!){
+                    // SecondActivityに遷移するためのIntent
+                    val intent = Intent(context, EditActivity::class.java)
+                    // RecyclerViewの要素をタップするとintentによりSecondActivityに遷移する
+                    // また，要素のidをSecondActivityに渡す
+                    intent.putExtra("id", item.id)
+                    startActivity(intent)
+                }else{
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content), "保存中なためお待ち下さい。", Snackbar.LENGTH_SHORT).show()
+                }
             }
 
             override fun onReView(moji: String) {

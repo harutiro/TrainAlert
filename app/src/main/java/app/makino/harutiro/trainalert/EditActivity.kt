@@ -218,6 +218,9 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 new?.alertCheck = editSwichi.isChecked
 
                 new?.routeList?.clear()
+                new?.routeAllNumber = editAddRouteLiniurLayout.size
+
+//                new?.routeList?.clear()
 //                new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
 
             }
