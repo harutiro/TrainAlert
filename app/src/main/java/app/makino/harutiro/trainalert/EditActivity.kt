@@ -200,7 +200,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 new?.routeName = editRouteName.text.toString()
                 new?.alertCheck = editSwichi.isChecked
 
-//                new?.routeList?.clear()
+                new?.routeList?.clear()
 //                new?.routeList?.addAll(routeLists.sortedBy { it.indexCount })
 
             }
