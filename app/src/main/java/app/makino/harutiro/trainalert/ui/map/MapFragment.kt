@@ -2,6 +2,7 @@ package app.makino.harutiro.trainalert.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
@@ -12,7 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.R
+import app.makino.harutiro.trainalert.adapter.MapFragmentRecycleViewAdapter
+import app.makino.harutiro.trainalert.adapter.RouteRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,6 +28,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.snackbar.Snackbar
 import io.realm.Realm
 
 
@@ -34,6 +41,9 @@ class MapFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
+
+        val realmResalt = realm.where(RouteDateClass::class.java).findAll()
+
         //        ツールバーの表示
         googleMap.uiSettings.isMapToolbarEnabled = true
 
@@ -50,8 +60,6 @@ class MapFragment : Fragment() {
             val osakaStation = LatLng(location!!.latitude, location.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
         }
-
-        val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
 //        通知の範囲をお知らせ
         for (i in realmResalt){
@@ -101,6 +109,31 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+
+        //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
+        val rView = view?.findViewById<RecyclerView>(R.id.mapRouteRV)
+        val adapter = MapFragmentRecycleViewAdapter(requireContext(), object: MapFragmentRecycleViewAdapter.OnItemClickListner{
+            override fun onItemClick(item: RouteDateClass) {
+                if(item.routeAllNumber <= item.routeList?.size!!){
+                    // SecondActivityに遷移するためのIntent
+                    val intent = Intent(context, EditActivity::class.java)
+                    // RecyclerViewの要素をタップするとintentによりSecondActivityに遷移する
+                    // また，要素のidをSecondActivityに渡す
+                    intent.putExtra("id", item.id)
+                    startActivity(intent)
+                }else{
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content), "保存中なためお待ち下さい。", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        })
+        rView?.layoutManager = LinearLayoutManager(context)
+        rView?.adapter = adapter
+
+        val realmResalt = realm.where(RouteDateClass::class.java).findAll()
+
+        adapter?.setList(realmResalt)
+
     }
 
 
