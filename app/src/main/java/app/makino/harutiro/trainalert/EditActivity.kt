@@ -154,16 +154,16 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝編集したるーとを手動で反映させる部分
-        findViewById<Button>(R.id.editSearchButton).setOnClickListener {
-            Snackbar.make(findViewById(android.R.id.content), "検索中", Snackbar.LENGTH_SHORT).show()
-
-            searchRouteList(editAddRouteLiniurLayout)
-            Handler(Looper.getMainLooper()).postDelayed({
-                routeAdd()
-            }, 15000)
-
-
-        }
+//        findViewById<Button>(R.id.editSearchButton).setOnClickListener {
+//            Snackbar.make(findViewById(android.R.id.content), "検索中", Snackbar.LENGTH_SHORT).show()
+//
+//            searchRouteList(editAddRouteLiniurLayout)
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                routeAdd()
+//            }, 5000)
+//
+//
+//        }
 
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
