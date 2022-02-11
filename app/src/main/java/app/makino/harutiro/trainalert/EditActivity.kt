@@ -87,6 +87,23 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         // MainActivityのRecyclerViewの要素をタップした場合はidが，fabをタップした場合は"空白"が入っているはず
         id = intent.getStringExtra("id")
 
+//=======================Viewの操作の部分
+
+        editEverydayCheckBox.setOnCheckedChangeListener { button, b ->
+            editSundayButton.isChecked = b
+            editMondayButton.isChecked = b
+            editTuesdayButton.isChecked = b
+            editWednesdayButton.isChecked = b
+            editThursdayButton.isChecked = b
+            editFridayButton.isChecked = b
+            editSaturdayButton.isChecked = b
+        }
+
+        editAllDayCheckBox.setOnCheckedChangeListener { button, b ->
+            editDepartureEditText.isEnabled = !b
+            editArrivalEditText.isEnabled = !b
+        }
+
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝項目初期化部分
         val editAddRouteLiniurLayout = findViewById<LinearLayout>(R.id.editAddRouteLinearLayout)
 
