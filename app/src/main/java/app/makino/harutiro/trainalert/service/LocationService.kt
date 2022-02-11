@@ -138,19 +138,18 @@ class LocationService : Service() {
                     Log.d("debag2", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
 
                     for(i in realmResalt){
-                        val j = i.routeList?.sortedBy { it.indexCount }?.get(i.routeNumber)
+                        for( j in i.routeList!!){
+                            val distance = j?.let {
+                                getDistance(location.latitude,location.longitude,
+                                    it.placeLat,j.placeLon,'k')
+                            }
 
-                        val distance = j?.let {
-                            getDistance(location.latitude,location.longitude,
-                                it.placeLat,j.placeLon,'k')
-                        }
+                            if (j != null) {
+                                Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
+                                Log.d("debag3","$distance")
+                            }
 
-                        if (j != null) {
-                            Log.d("debag3","${i.routeName},${j.placeLovalLanguageName}")
-                            Log.d("debag3","$distance")
-                        }
-
-                        if (distance!! <= 0.600 && routeDateUUID.isEmpty() && routeListDateUUID.isEmpty()) {
+                            if (distance!! <= 0.600 && routeDateUUID.isEmpty() && routeListDateUUID.isEmpty()) {
 
                                 if((isBluetoothHeadsetConnected || isEarphoneConnected) ){
 //                                    notificationManager.notify(99, notification2)
@@ -161,19 +160,18 @@ class LocationService : Service() {
                                 routeDateUUID = i.id.toString()
                                 routeListDateUUID = j.id.toString()
 
+                            }
+
+                            if (distance > 0.600 && routeDateUUID == i.id && routeListDateUUID == j.id) {
+                                routeDateUUID = ""
+                                routeListDateUUID = ""
+                            }
+
+                            Log.d("debag8",i.id.toString() )
+                            Log.d("debag8",routeDateUUID )
+                            Log.d("debag8",j.id.toString() )
+                            Log.d("debag8",routeListDateUUID )
                         }
-
-                        if (distance > 0.600 && routeDateUUID == i.id && routeListDateUUID == j.id) {
-                            routeDateUUID = ""
-                            routeListDateUUID = ""
-                        }
-
-                        Log.d("debag8",i.id.toString() )
-                        Log.d("debag8",routeDateUUID )
-                        Log.d("debag8",j.id.toString() )
-                        Log.d("debag8",routeListDateUUID )
-
-
                     }
                 }
             }
