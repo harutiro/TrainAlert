@@ -15,7 +15,9 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.*
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
@@ -65,8 +67,12 @@ class LocationService : Service() {
         registerReceiver(broadcastReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
 
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        registerReceiver(broadcastReceiver, monitorHeadsetFilter)
-        bluetoothAdapter.getProfileProxy(this, bluetoothPolicyListener, BluetoothProfile.HEADSET)
+        if(bluetoothAdapter != null){
+            registerReceiver(broadcastReceiver, monitorHeadsetFilter)
+            bluetoothAdapter.getProfileProxy(this, bluetoothPolicyListener, BluetoothProfile.HEADSET)
+        }else{
+            Toast.makeText(applicationContext, "Bluetoothが端末に搭載されていません", Toast.LENGTH_SHORT).show()
+        }
 
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝通知部分
