@@ -75,4 +75,7 @@ dependencies {
     implementation 'com.google.maps:google-maps-services:1.0.1'
     implementation 'org.slf4j:slf4j-simple:1.7.25'
 
+//    設定
+    implementation 'androidx.preference:preference:1.2.0'
+
 }
