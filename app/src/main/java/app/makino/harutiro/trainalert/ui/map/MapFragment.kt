@@ -1,7 +1,6 @@
 package app.makino.harutiro.trainalert.ui.map
 
 import android.Manifest
-import android.Manifest.permission_group.LOCATION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,26 +12,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.MapFragmentRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
+import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import io.realm.Realm
+import io.realm.RealmList
+import java.util.ArrayList
 
 
 class MapFragment : Fragment() {
@@ -48,6 +46,12 @@ class MapFragment : Fragment() {
 
     var gMap: GoogleMap? = null
     var adapter: MapFragmentRecycleViewAdapter? = null
+
+
+    //    マップの丸や円を消去するために残しておくリスト
+    val circlesList = ArrayList<Circle>()
+    val polyLineList = ArrayList<Polyline>()
+
 
 
     @SuppressLint("MissingPermission")
@@ -78,33 +82,8 @@ class MapFragment : Fragment() {
 
 //        通知の範囲をお知らせ
         for (i in realmResalt){
-            val sortByRouteList = i.routeList?.sortedBy { it.indexCount }
-
-            for ((index,j) in sortByRouteList?.withIndex()!!){
-                Log.d("debag9",j.placeLovalLanguageName)
-                Log.d("debag9",j.indexCount.toString())
-
-                val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
-                val radius = 800.0// 10km
-                googleMap.addCircle(
-                    CircleOptions()
-                        .center(latLng)          // 円の中心位置
-                        .radius(radius)          // 半径 (メートル単位)
-                        .strokeColor(Color.BLUE) // 線の色
-                        .strokeWidth(2f)         // 線の太さ
-                        .fillColor(0x400080ff)   // 円の塗りつぶし色
-                )
-
-                if (index < i.routeList!!.size - 1){
-                    googleMap.addPolyline(
-                        PolylineOptions()
-                            .add(LatLng(sortByRouteList[index]?.placeLat ?: 0.0,sortByRouteList[index]?.placeLon ?: 0.0 )) // 東京駅
-                            .add(LatLng(sortByRouteList[index + 1]?.placeLat ?: 0.0,sortByRouteList[index +1]?.placeLon ?: 0.0 )) // 東京駅
-                            .color(Color.BLUE)                   // 線の色
-                            .width(8f)                          // 線の太さ
-                    )
-                }
-
+            if(i.routeList != null){
+                routeAdd(i.routeList!! , false)
             }
         }
 
@@ -138,35 +117,8 @@ class MapFragment : Fragment() {
         val rView = view?.findViewById<RecyclerView>(R.id.mapRouteRV)
         adapter = MapFragmentRecycleViewAdapter(requireContext(), object: MapFragmentRecycleViewAdapter.OnItemClickListner{
             override fun onItemClick(item: RouteDateClass) {
-                //        通知の範囲をお知らせ
-                val sortByRouteList = item.routeList?.sortedBy { it.indexCount }
-
-                for ((index,j) in sortByRouteList?.withIndex()!!){
-                    Log.d("debag9",j.placeLovalLanguageName)
-                    Log.d("debag9",j.indexCount.toString())
-
-                    val latLng = LatLng(j.placeLat, j.placeLon) // 東京駅
-                    val radius = 800.0// 10km
-
-                    gMap?.addCircle(
-                        CircleOptions()
-                            .center(latLng)          // 円の中心位置
-                            .radius(radius)          // 半径 (メートル単位)
-                            .strokeColor(Color.BLUE) // 線の色
-                            .strokeWidth(2f)         // 線の太さ
-                            .fillColor(0x400080ff)   // 円の塗りつぶし色
-                    )
-
-                    if (index < item.routeList!!.size - 1){
-                        gMap?.addPolyline(
-                            PolylineOptions()
-                                .add(LatLng(sortByRouteList[index]?.placeLat ?: 0.0,sortByRouteList[index]?.placeLon ?: 0.0 )) // 東京駅
-                                .add(LatLng(sortByRouteList[index + 1]?.placeLat ?: 0.0,sortByRouteList[index +1]?.placeLon ?: 0.0 )) // 東京駅
-                                .color(Color.BLUE)                   // 線の色
-                                .width(8f)                          // 線の太さ
-                        )
-                    }
-
+                if(item.routeList != null){
+                    routeAdd(item.routeList!!,true)
                 }
             }
         })
@@ -197,6 +149,71 @@ class MapFragment : Fragment() {
 
         adapter?.setList(realmResalt)
 
+    }
+
+    fun routeAdd(routeLists: RealmList<RouteListDateClass>,dateClear:Boolean) {
+//        保存されているリストが順番道理ではないため、順番に並べ替えられたものを新規作成
+        val sortedRouteLists = routeLists.sortedBy { it.indexCount }
+
+        if(dateClear){
+            //すでにある円や線を消去
+            for (i in circlesList) {
+                i.remove()
+            }
+            circlesList.clear()
+            for (i in polyLineList) {
+                i.remove()
+            }
+            polyLineList.clear()
+        }
+
+
+//        円や線の追加
+        for ((index, j) in sortedRouteLists.withIndex()) {
+
+//            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
+            val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            val radius = 800.0// 400ｍ
+            gMap?.addCircle(
+                CircleOptions()
+                    .center(latLng)          // 円の中心位置
+                    .radius(radius)          // 半径 (メートル単位)
+                    .strokeColor(Color.BLUE) // 線の色
+                    .strokeWidth(2f)         // 線の太さ
+                    .fillColor(0x400080ff)   // 円の塗りつぶし色
+            )?.let {
+                circlesList.add(
+                    it
+                )
+            }
+
+
+//            線の追加 設定するときに消すことが出来るようにリストに保存をしておく
+            if (index < routeLists.size - 1) {
+                gMap?.addPolyline(
+                    PolylineOptions()
+                        .add(
+                            LatLng(
+                                sortedRouteLists[index].placeLat,
+                                sortedRouteLists[index].placeLon
+                            )
+                        ) // 1つ目
+                        .add(
+                            LatLng(
+                                sortedRouteLists[index + 1].placeLat,
+                                sortedRouteLists[index + 1].placeLon
+                            )
+                        ) // 次のルート
+                        .color(Color.BLUE)                   // 線の色
+                        .width(8f)                          // 線の太さ
+                )?.let {
+                    polyLineList.add(
+                        it
+                    )
+                }
+            }
+
+        }
     }
 
 
