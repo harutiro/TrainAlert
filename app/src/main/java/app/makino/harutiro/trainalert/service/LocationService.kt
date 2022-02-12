@@ -16,6 +16,7 @@ import android.media.AudioManager
 import android.os.*
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
@@ -374,12 +375,19 @@ class LocationService : Service() {
     }
 
     private val bluetoothPolicyListener = object : BluetoothProfile.ServiceListener {
-        @SuppressLint("MissingPermission")
+
         override fun onServiceConnected(profile: Int, proxy: BluetoothProfile?) {
             if (profile == BluetoothProfile.HEADSET) {
                 Log.d("debag", "BluetoothProfile onServiceConnected")
 
                 currentBluetoothHeadset = proxy as BluetoothHeadset
+                if (ActivityCompat.checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
                 isBluetoothHeadsetConnected = (currentBluetoothHeadset?.connectedDevices?.size ?: 0 > 0)
             }
         }
