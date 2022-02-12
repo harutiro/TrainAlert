@@ -180,11 +180,10 @@ class LocationService : Service() {
                             }
                         }
 
-
-
-
-
                         for( j in i.routeList!!){
+
+                            if(j.indexCount == 0){ continue }
+
                             val distance = j?.let {
                                 getDistance(location.latitude,location.longitude,
                                     it.placeLat,j.placeLon,'k')
