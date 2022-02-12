@@ -82,6 +82,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         val editSaturdayButton = findViewById<ToggleButton>(R.id.editSaturdayButton)
         val editArrivalEditText = findViewById<EditText>(R.id.editArrivalEditText)
         val editDepartureEditText = findViewById<EditText>(R.id.editDepartureEditText)
+        val editRemove = findViewById<ImageButton>(R.id.editRemove)
 
         //            TODO:STRINGに登録
         Places.initialize(application, "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g")
@@ -116,6 +117,16 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         editDepartureEditText.setOnClickListener{
             showTimePickerDialog(editDepartureEditText)
+        }
+
+        editRemove.setOnClickListener{
+            if(!id.isNullOrEmpty()){
+                realm.executeTransaction {
+                    val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+                    realmResalt?.deleteFromRealm()
+                }
+            }
+            finish()
         }
 
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝項目初期化部分
