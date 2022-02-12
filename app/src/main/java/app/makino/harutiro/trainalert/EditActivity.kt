@@ -520,13 +520,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
+        v.findViewById<ImageButton>(R.id.itemEditRemoveButton).setOnClickListener{
+            editAddRouteLiniurLayout.removeView(v)
+        }
+
 //        ルートのラインを設定する 最初と最後の部分で表示させるものを指定する
         if (i?.start == true) {
             v.findViewById<View>(R.id.itemEditTopLineView).visibility = INVISIBLE
+            v.findViewById<ImageButton>(R.id.itemEditRemoveButton).visibility = INVISIBLE
         }
         if (i?.end == true) {
             v.findViewById<View>(R.id.itemEditButtomLineView).visibility = INVISIBLE
             v.findViewById<Button>(R.id.itemEditAddButton).visibility = INVISIBLE
+            v.findViewById<ImageButton>(R.id.itemEditRemoveButton).visibility = INVISIBLE
         }
 
 //        テキストの表示
