@@ -279,9 +279,18 @@ class LocationService : Service() {
 
     }
 
-    @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         val locationRequest = createLocationRequest() ?: return
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -337,7 +346,6 @@ class LocationService : Service() {
 
     //    ＝＝＝＝＝＝＝＝＝＝＝イヤホン取得部分
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        @SuppressLint("MissingPermission")
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action ?: return
             when (action) {
@@ -358,6 +366,13 @@ class LocationService : Service() {
                     Thread.sleep(2000)
 
                     Log.d("debag", "Broadcast: ACTION_ACL_CONNECTED")
+                    if (ActivityCompat.checkSelfPermission(
+                            applicationContext,
+                            Manifest.permission.BLUETOOTH_CONNECT
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        return
+                    }
                     if (currentBluetoothHeadset?.connectedDevices?.size ?: 0 > 0) {
                         isBluetoothHeadsetConnected = true
                         Log.d("debag", "★")
