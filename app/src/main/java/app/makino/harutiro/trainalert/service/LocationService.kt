@@ -141,19 +141,34 @@ class LocationService : Service() {
                 for (location in p0.locations){
                     updatedCount++
                     Log.d("debag3", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
-                    val sdf = SimpleDateFormat("HH:mm", Locale.JAPAN)
+                    val sdfTime = SimpleDateFormat("HH:mm", Locale.JAPAN)
+                    val sdfWeek = SimpleDateFormat("EEEE", Locale.US)
 
                     val date = Date(System.currentTimeMillis())
-                    val formatted = sdf.format(date)
-                    val osTime = sdf.parse(formatted)
+                    val formatted = sdfTime.format(date)
+                    val osTime = sdfTime.parse(formatted)
 
                     for(i in realmResalt){
 
                         if(!i.alertCheck){ continue }
 
+                        if(i.weekSun || i.weekMon || i.weekTue || i.weekWed || i.weekThe || i.weekFri || i.weekSat){
+                            val dayOfWeek = sdfWeek.format(date)
+                            var isWeekCheck = false
+                            isWeekCheck = isWeekCheck || (i.weekSun && "Sunday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekMon && "Monday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekTue && "Tuesday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekWed && "Wednesday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekThe && "Thursday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekFri && "Friday" == dayOfWeek)
+                            isWeekCheck = isWeekCheck || (i.weekSat && "Saturday" == dayOfWeek)
+                            if(!isWeekCheck){ continue }
+                        }
+
+
                         if(!i.timeAllDayCheck){
-                            val timeArriveParse = sdf.parse(i.timeArriva)
-                            val timeDepartureParse = sdf.parse(i.timeDeparture)
+                            val timeArriveParse = sdfTime.parse(i.timeArriva)
+                            val timeDepartureParse = sdfTime.parse(i.timeDeparture)
                             val checkDtoA: Int = timeDepartureParse.compareTo(timeArriveParse)
                             val checkAtoO: Int = timeArriveParse.compareTo(osTime)
                             val checkDtoO: Int = timeDepartureParse.compareTo(osTime)
@@ -191,6 +206,15 @@ class LocationService : Service() {
                                 routeDateUUID = i.id.toString()
                                 routeListDateUUID = j.id.toString()
 
+                                val dayOfWeek = sdfWeek.format(date)
+                                if(!(i.weekSun || i.weekMon || i.weekTue || i.weekWed || i.weekThe || i.weekFri || i.weekSat)){
+                                    if(j.indexCount == i.routeList!!.size-1){
+                                        realm.executeTransaction{
+                                            val new = it.where(RouteDateClass::class.java).equalTo("id", i.id).findFirst()
+                                            new?.alertCheck = false
+                                        }
+                                    }
+                                }
                             }
 
                             if (distance > 0.600 && routeDateUUID == i.id && routeListDateUUID == j.id) {
