@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.MainActivity2
 import app.makino.harutiro.trainalert.R
+
+
+
 
 class SettingFragment : Fragment(R.layout.fragment_setting) {
 

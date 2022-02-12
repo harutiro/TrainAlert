@@ -1,16 +1,16 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="通知しない場所を決めます">
+<!--    <PreferenceCategory app:title="通知しない場所を決めます">-->
 
-        <Preference
-            app:key="signature"
-            app:title="家の座標を取得します"
-            app:summary="なし"
-            app:useSimpleSummaryProvider="true" />
+<!--        <Preference-->
+<!--            app:key="signature"-->
+<!--            app:title="家の座標を取得します"-->
+<!--            app:summary="なし"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
 
 
-    </PreferenceCategory>
+<!--    </PreferenceCategory>-->
     <PreferenceCategory app:title="サービスの開始">
 
         <Preference
