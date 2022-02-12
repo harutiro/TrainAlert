@@ -148,6 +148,9 @@ class LocationService : Service() {
                     val osTime = sdf.parse(formatted)
 
                     for(i in realmResalt){
+
+                        if(!i.alertCheck){ continue }
+
                         if(!i.timeAllDayCheck){
                             val timeArriveParse = sdf.parse(i.timeArriva)
                             val timeDepartureParse = sdf.parse(i.timeDeparture)
@@ -161,6 +164,8 @@ class LocationService : Service() {
                                 if(checkAtoO * checkDtoO == -1){ continue }
                             }
                         }
+
+
 
 
 
