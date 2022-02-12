@@ -48,11 +48,6 @@
             <PaintGroupHighlightMap />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/navigation/mobile_navigation.xml">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
       </map>
     </option>
   </component>

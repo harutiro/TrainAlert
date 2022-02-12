@@ -8,6 +8,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
@@ -68,6 +69,10 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+
+//        ツールバーの編集
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         val editRouteName = findViewById<EditText>(R.id.editRouteName)
         val editSwichi = findViewById<Switch>(R.id.editSwichi)
@@ -288,6 +293,16 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
                 Snackbar.LENGTH_SHORT
             ).show()
         }
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // android.R.id.home に戻るボタンを押した時のidが取得できる
+        if (item.itemId == android.R.id.home) {
+            // 今回はActivityを終了させている
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
