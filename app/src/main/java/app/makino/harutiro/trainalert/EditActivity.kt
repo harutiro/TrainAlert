@@ -1,24 +1,31 @@
 package app.makino.harutiro.trainalert
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.View.*
+import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.iterator
+import androidx.core.view.size
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -27,20 +34,10 @@ import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.realm.Realm
-import java.util.*
-import android.widget.LinearLayout
-import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.iterator
-import androidx.core.view.size
-import app.makino.harutiro.trainalert.ui.map.MapFragment
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
+import io.realm.Realm
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class EditActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -112,6 +109,13 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
         editAllDayCheckBox.setOnCheckedChangeListener { button, b ->
             editDepartureEditText.isEnabled = !b
             editArrivalEditText.isEnabled = !b
+        }
+
+        editArrivalEditText.setOnClickListener{
+            showTimePickerDialog(editArrivalEditText)
+        }
+        editDepartureEditText.setOnClickListener{
+            showTimePickerDialog(editDepartureEditText)
         }
 
 //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝項目初期化部分
@@ -411,6 +415,22 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             indexCount++
         }
+    }
+    /* 時間ダーダイアログを開くためのメソッド */
+    fun showTimePickerDialog(textField:EditText){
+        val calendar: Calendar = Calendar.getInstance()
+        var timeString = ""
+
+        val cal = Calendar.getInstance()
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+            cal.set(Calendar.HOUR_OF_DAY, hour)
+            cal.set(Calendar.MINUTE, minute)
+            //EditTextに選択された時間を設定
+            textField.setText( SimpleDateFormat("HH:mm").format(cal.time))
+        }
+
+        //タイムピッカーダイアログを生成および設定
+        TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
     }
 
     fun routeAdd() {
