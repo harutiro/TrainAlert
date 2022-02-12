@@ -15,16 +15,14 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.*
 import android.util.Log
-import android.view.WindowManager
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.MainActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import com.google.android.gms.location.*
 import io.realm.Realm
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.acos
 import kotlin.math.cos
@@ -142,9 +140,30 @@ class LocationService : Service() {
                 p0 ?: return
                 for (location in p0.locations){
                     updatedCount++
-                    Log.d("debag2", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
+                    Log.d("debag3", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
+                    val sdf = SimpleDateFormat("HH:mm", Locale.JAPAN)
+
+                    val date = Date(System.currentTimeMillis())
+                    val formatted = sdf.format(date)
+                    val osTime = sdf.parse(formatted)
 
                     for(i in realmResalt){
+                        if(!i.timeAllDayCheck){
+                            val timeArriveParse = sdf.parse(i.timeArriva)
+                            val timeDepartureParse = sdf.parse(i.timeDeparture)
+                            val checkDtoA: Int = timeDepartureParse.compareTo(timeArriveParse)
+                            val checkAtoO: Int = timeArriveParse.compareTo(osTime)
+                            val checkDtoO: Int = timeDepartureParse.compareTo(osTime)
+
+                            if (checkDtoA <= 0){
+                                if(checkAtoO * checkDtoO == 1){ continue }
+                            }else{
+                                if(checkAtoO * checkDtoO == -1){ continue }
+                            }
+                        }
+
+
+
                         for( j in i.routeList!!){
                             val distance = j?.let {
                                 getDistance(location.latitude,location.longitude,
