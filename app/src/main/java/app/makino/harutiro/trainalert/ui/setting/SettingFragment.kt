@@ -14,9 +14,6 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<Button>(R.id.gotoButton).setOnClickListener{
-            startActivity(Intent(context, MainActivity2::class.java))
-        }
 
         if (savedInstanceState == null) {
             childFragmentManager
