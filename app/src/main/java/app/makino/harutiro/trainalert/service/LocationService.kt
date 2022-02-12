@@ -187,10 +187,16 @@ class LocationService : Service() {
         val openIntent = Intent(this, MainActivity::class.java).let {
             PendingIntent.getActivity(this, 0, it, PendingIntent.FLAG_IMMUTABLE)
         }
+
+        val notificationMessage = if(requestPermission()){
+            "駅に近づいたら通知を出します"
+        }else{
+            "パーミッションが許可されていないため、位置情報を取得できません"
+        }
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("位置情報テスト")
-            .setContentText("位置情報を取得しています...")
+            .setContentTitle("位置情報を取得してます")
+            .setContentText(notificationMessage)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(openIntent)
             .build()
