@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrainAlert">
         <activity
-            android:name=".MainActivity2"
+            android:name=".OpenLocationServiceActivity"
             android:exported="false" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
