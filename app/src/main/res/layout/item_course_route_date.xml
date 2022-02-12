@@ -67,21 +67,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="次は"
-        app:layout_constraintStart_toStartOf="@+id/itemRouteNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/itemRouteAlertSwitch" />
-
-    <TextView
-        android:id="@+id/itemRouteNextStationTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OO駅"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

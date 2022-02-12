@@ -28,7 +28,6 @@ class RouteRecycleViewAdapter(private val context: Context, private val listener
         val itemRouteNameTextView: TextView = view.findViewById(R.id.itemRouteNameTextView)
         val itemRouteAlertSwitch: Switch = view.findViewById(R.id.itemRouteAlertSwitch)
         val itemRouteRemoveButton: ImageButton = view.findViewById(R.id.itemRouteRemoveButton)
-        val itemRouteNextStationTextView:TextView = view.findViewById(R.id.itemRouteNextStationTextView)
         val itemROuteConstraint:ConstraintLayout =view.findViewById(R.id.itemRouteConstraint)
     }
 
