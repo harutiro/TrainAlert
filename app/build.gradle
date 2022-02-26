@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id "realm-android"
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -58,7 +61,12 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
 //    GPS
-    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    constraints {
+        implementation('androidx.work:work-runtime:2.7.0') {
+            because 'previous versions have a bug impacting this application'
+        }
+    }
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.google.android.gms:play-services-maps:18.0.1'
 
@@ -66,5 +74,8 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.5.0'
     implementation 'com.google.maps:google-maps-services:1.0.1'
     implementation 'org.slf4j:slf4j-simple:1.7.25'
+
+//    設定
+    implementation 'androidx.preference:preference:1.2.0'
 
 }

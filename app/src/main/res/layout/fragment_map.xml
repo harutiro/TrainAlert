@@ -7,10 +7,15 @@
     tools:context=".ui.map.MapFragment">
 
     <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mapFragment"
-        android:name="com.google.android.gms.maps.MapFragment"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".MapFragment" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -21,6 +26,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:padding="0dp"
+        android:visibility="gone"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +96,8 @@
         android:id="@+id/mapRouteRV"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

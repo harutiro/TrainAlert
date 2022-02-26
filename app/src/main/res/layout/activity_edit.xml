@@ -24,22 +24,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        tools:context=".MainActivity">
+        tools:context=".EditActivity">
 
         <fragment
+            android:id="@+id/editMapFragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mapFragment"
-            android:name="com.google.android.gms.maps.MapFragment"/>
-
-        <fragment
-            android:id="@+id/autocomplete_fragment"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            tools:layout_editor_absoluteX="-16dp"
+            tools:layout_editor_absoluteY="-150dp"
+            tools:context=".EditActivity"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -55,184 +49,6 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:context=".BottomSheetFragment">
 
-        <Button
-            android:id="@+id/editSearchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:text="→ルート検索"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editRV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/editRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editAllDayCheckBox">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <CheckBox
-            android:id="@+id/editAllDayCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="終日　※電池消費が激しくなります"
-            app:layout_constraintStart_toStartOf="@+id/editDepartureEditText"
-            app:layout_constraintTop_toBottomOf="@+id/editDepartureEditText" />
-
-        <EditText
-            android:id="@+id/editDepartureEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/text_border_layout"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="出発予想時間"
-            android:inputType="textMultiLine"
-            android:minHeight="48dp"
-            android:padding="8dp"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/textView4"
-            app:layout_constraintStart_toStartOf="@+id/editEverydayCheckBox"
-            app:layout_constraintTop_toBottomOf="@+id/editEverydayCheckBox" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="1dp"
-            android:text="～"
-            app:layout_constraintBottom_toBottomOf="@+id/editDepartureEditText"
-            app:layout_constraintEnd_toStartOf="@+id/editArrivalEditText"
-            app:layout_constraintStart_toEndOf="@+id/editDepartureEditText"
-            app:layout_constraintTop_toTopOf="@+id/editDepartureEditText" />
-
-        <EditText
-            android:id="@+id/editArrivalEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/text_border_layout"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="出発予想時間"
-            android:inputType="textMultiLine"
-            android:minHeight="48dp"
-            android:padding="8dp"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/editDepartureEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/editDepartureEditText" />
-
-        <CheckBox
-            android:id="@+id/editEverydayCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="毎日"
-            app:layout_constraintStart_toStartOf="@+id/editMondayButton"
-            app:layout_constraintTop_toBottomOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editSundayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="日"
-            android:textOn="日"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/editSaturdayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editSaturdayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="土"
-            android:textOn="土"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toStartOf="@+id/editSundayButton"
-            app:layout_constraintStart_toEndOf="@+id/editFridayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editFridayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="金"
-            android:textOn="金"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toStartOf="@+id/editSaturdayButton"
-            app:layout_constraintStart_toEndOf="@+id/editThursdayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editThursdayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="木"
-            android:textOn="木"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toStartOf="@+id/editFridayButton"
-            app:layout_constraintStart_toEndOf="@+id/editWednesdayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editWednesdayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="水"
-            android:textOn="水"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toStartOf="@+id/editThursdayButton"
-            app:layout_constraintStart_toEndOf="@+id/editTuesdayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editTuesdayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="火"
-            android:textOn="火"
-            app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
-            app:layout_constraintEnd_toStartOf="@+id/editWednesdayButton"
-            app:layout_constraintStart_toEndOf="@+id/editMondayButton"
-            app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
-
-        <ToggleButton
-            android:id="@+id/editMondayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/toggle_layout"
-            android:textIsSelectable="false"
-            android:textOff="月"
-            android:textOn="月"
-            app:layout_constraintEnd_toStartOf="@+id/editTuesdayButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editIcon" />
-
         <View
             android:id="@+id/view3"
             android:layout_width="32dp"
@@ -244,6 +60,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <EditText
+            android:id="@+id/editRouteName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="ルート名"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/editIcon"
+            app:layout_constraintEnd_toStartOf="@+id/editSwichi"
+            app:layout_constraintStart_toEndOf="@+id/editIcon"
+            app:layout_constraintTop_toTopOf="@+id/editIcon" />
+
         <ImageView
             android:id="@+id/editIcon"
             android:layout_width="75dp"
@@ -253,17 +85,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view3"
             app:srcCompat="@drawable/ic_launcher_foreground" />
-
-        <TextView
-            android:id="@+id/editName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="大学"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/editIcon"
-            app:layout_constraintStart_toEndOf="@+id/editIcon"
-            app:layout_constraintTop_toTopOf="@+id/editIcon" />
 
         <Switch
             android:id="@+id/editSwichi"
@@ -291,6 +112,196 @@
             app:layout_constraintTop_toTopOf="@+id/editIcon"
             app:srcCompat="@drawable/delete_black_24dp"
             tools:ignore="SpeakableTextPresentCheck" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editIcon">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp">
+
+                <CheckBox
+                    android:id="@+id/editEverydayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="毎日"
+                    app:layout_constraintStart_toStartOf="@+id/editMondayButton"
+                    app:layout_constraintTop_toBottomOf="@+id/editMondayButton" />
+
+                <ToggleButton
+                    android:id="@+id/editMondayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="月"
+                    android:textOn="月"
+                    app:layout_constraintEnd_toStartOf="@+id/editTuesdayButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/editThursdayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="木"
+                    android:textOn="木"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toStartOf="@+id/editFridayButton"
+                    app:layout_constraintStart_toEndOf="@+id/editWednesdayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <EditText
+                    android:id="@+id/editDepartureEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/text_border_layout"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="出発予想時間"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:padding="8dp"
+                    android:textSize="20sp"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    app:layout_constraintEnd_toStartOf="@+id/textView4"
+                    app:layout_constraintStart_toStartOf="@+id/editEverydayCheckBox"
+                    app:layout_constraintTop_toBottomOf="@+id/editEverydayCheckBox" />
+
+                <ToggleButton
+                    android:id="@+id/editTuesdayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="火"
+                    android:textOn="火"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toStartOf="@+id/editWednesdayButton"
+                    app:layout_constraintStart_toEndOf="@+id/editMondayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="～"
+                    app:layout_constraintBottom_toBottomOf="@+id/editDepartureEditText"
+                    app:layout_constraintEnd_toStartOf="@+id/editArrivalEditText"
+                    app:layout_constraintStart_toEndOf="@+id/editDepartureEditText"
+                    app:layout_constraintTop_toTopOf="@+id/editDepartureEditText" />
+
+                <EditText
+                    android:id="@+id/editArrivalEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/text_border_layout"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="出発予想時間"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:padding="8dp"
+                    android:textSize="20sp"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    app:layout_constraintBottom_toBottomOf="@+id/editDepartureEditText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView4"
+                    app:layout_constraintTop_toTopOf="@+id/editDepartureEditText" />
+
+                <ToggleButton
+                    android:id="@+id/editSaturdayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="土"
+                    android:textOn="土"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toStartOf="@+id/editSundayButton"
+                    app:layout_constraintStart_toEndOf="@+id/editFridayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <ToggleButton
+                    android:id="@+id/editFridayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="金"
+                    android:textOn="金"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toStartOf="@+id/editSaturdayButton"
+                    app:layout_constraintStart_toEndOf="@+id/editThursdayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <ToggleButton
+                    android:id="@+id/editWednesdayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="水"
+                    android:textOn="水"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toStartOf="@+id/editThursdayButton"
+                    app:layout_constraintStart_toEndOf="@+id/editTuesdayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <CheckBox
+                    android:id="@+id/editAllDayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="終日　※電池消費が激しくなります"
+                    app:layout_constraintStart_toStartOf="@+id/editDepartureEditText"
+                    app:layout_constraintTop_toBottomOf="@+id/editDepartureEditText" />
+
+                <ToggleButton
+                    android:id="@+id/editSundayButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/toggle_layout"
+                    android:textIsSelectable="false"
+                    android:textOff="日"
+                    android:textOn="日"
+                    app:layout_constraintBottom_toBottomOf="@+id/editMondayButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/editSaturdayButton"
+                    app:layout_constraintTop_toTopOf="@+id/editMondayButton" />
+
+                <LinearLayout
+                    android:id="@+id/editAddRouteLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editAllDayCheckBox" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

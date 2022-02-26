@@ -3,11 +3,6 @@
   <component name="StickySelectionHighlights">
     <option name="editorHighlights">
       <map>
-        <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/adapter/RouteRecycleViewAdapter.kt">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/ui/dashboard/DashboardFragment.kt">
           <value>
             <PaintGroupHighlightMap />
@@ -23,22 +18,12 @@
             <PaintGroupHighlightMap />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/app/makino/harutiro/trainalert/ui/setting/SettingFragment.kt">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/drawable/ic_baseline_arrow_drop_down_circle_24.xml">
           <value>
             <PaintGroupHighlightMap />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/drawable/tint__1_.xml">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
           <value>
             <PaintGroupHighlightMap />
           </value>
@@ -58,17 +43,7 @@
             <PaintGroupHighlightMap />
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_setting.xml">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/menu/bottom_nav_menu.xml">
-          <value>
-            <PaintGroupHighlightMap />
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/res/navigation/mobile_navigation.xml">
           <value>
             <PaintGroupHighlightMap />
           </value>

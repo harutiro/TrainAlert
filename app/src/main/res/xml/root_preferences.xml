@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    <PreferenceCategory app:title="通知しない場所を決めます">-->
+
+<!--        <Preference-->
+<!--            app:key="signature"-->
+<!--            app:title="家の座標を取得します"-->
+<!--            app:summary="なし"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+
+<!--    </PreferenceCategory>-->
+    <PreferenceCategory app:title="サービスの開始">
+
+        <Preference
+            app:key="signature"
+            app:title="バックグラウンドで座標を取得し始めます"
+            app:summary="開始"
+            app:useSimpleSummaryProvider="true">
+            <intent
+                android:targetPackage="app.makino.harutiro.trainalert"
+                android:targetClass="app.makino.harutiro.trainalert.MainActivity2"/>
+
+        </Preference>
+
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
