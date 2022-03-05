@@ -22,6 +22,9 @@ import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.MapFragmentRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -51,6 +54,8 @@ class MapFragment : Fragment() {
     //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
+
+    lateinit var mAdView : AdView
 
 
 
@@ -109,6 +114,13 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        //        admob
+        MobileAds.initialize(requireContext()) {}
+
+        mAdView = view.findViewById(R.id.flagmentMapAdView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
 
         //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー

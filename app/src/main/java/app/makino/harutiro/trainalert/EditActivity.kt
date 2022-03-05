@@ -20,6 +20,10 @@ import androidx.core.view.iterator
 import androidx.core.view.size
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -65,10 +69,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
 
+    lateinit var mAdView : AdView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+
+//        admob
+        MobileAds.initialize(this) {}
+
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
 //        ツールバーの編集
         supportActionBar!!.setDisplayShowHomeEnabled(true)
