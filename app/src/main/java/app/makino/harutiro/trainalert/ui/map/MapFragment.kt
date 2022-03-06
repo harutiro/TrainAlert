@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -67,7 +68,10 @@ class MapFragment : Fragment() {
 
 
         if(requestPermission()){
-            googleMap.isMyLocationEnabled = false
+
+
+            googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
 
             //                現在地の表示
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -80,6 +84,7 @@ class MapFragment : Fragment() {
                 val osakaStation = LatLng(location!!.latitude, location.longitude)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
             }
+
         }
 
 
@@ -119,6 +124,34 @@ class MapFragment : Fragment() {
         mAdView = view.findViewById(R.id.flagmentMapAdView)
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
+
+
+//        位置情報ボタン
+        view.findViewById<ImageButton>(R.id.mapFragmentLocationButton).setOnClickListener{
+
+
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermission()
+                return@setOnClickListener
+            }
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
+
+//                        カメラ移動
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
+        }
 
 
         //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
