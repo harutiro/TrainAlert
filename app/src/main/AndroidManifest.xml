@@ -31,7 +31,7 @@
 <!--        admob-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-4077124098444914~1376024210"/>
 
 <!--        googleMapAPI-->
         <meta-data
