@@ -65,11 +65,9 @@ class MapFragment : Fragment() {
 
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
-        //        ツールバーの表示
-        googleMap.uiSettings.isMapToolbarEnabled = true
 
         if(requestPermission()){
-            googleMap.isMyLocationEnabled = true
+            googleMap.isMyLocationEnabled = false
 
             //                現在地の表示
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
