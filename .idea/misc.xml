@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable-v24/4x.shape_rounded_corners_10dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable-v24/shape_rounded_corners_10dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/check_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/delete_black_24dp.xml" value="0.1" />
@@ -14,6 +15,7 @@
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/more_vert_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/notifications_black_24dp.xml" value="0.19907407407407407" />
+        <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/shape_4x_rounded_corners_40dp.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/switch_layout.xml" value="0.290625" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/text_border_layout.xml" value="0.1" />
         <entry key="..\:/Users/harut/AndroidStudioProjects/TrainAlert/app/src/main/res/drawable/tint__1_.xml" value="0.19444444444444445" />
