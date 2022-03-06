@@ -55,6 +55,7 @@ class MapFragment : Fragment() {
     //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
+    val markerList = ArrayList<Marker>()
 
     lateinit var mAdView : AdView
 
@@ -157,7 +158,7 @@ class MapFragment : Fragment() {
         //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
-        val rView = view?.findViewById<RecyclerView>(R.id.mapRouteRV)
+        val rView = view.findViewById<RecyclerView>(R.id.mapRouteRV)
         adapter = MapFragmentRecycleViewAdapter(requireContext(), object: MapFragmentRecycleViewAdapter.OnItemClickListner{
             override fun onItemClick(item: RouteDateClass) {
                 if(item.routeList != null){
@@ -208,14 +209,22 @@ class MapFragment : Fragment() {
                 i.remove()
             }
             polyLineList.clear()
+            for (i in markerList) {
+                i.remove()
+            }
+            markerList.clear()
+
         }
 
 
-//        円や線の追加
+//        円や線の追加 かつ カメラフレームの位置調整
+        val latlngLists = mutableListOf<LatLng>()
         for ((index, j) in sortedRouteLists.withIndex()) {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            latlngLists.add(latLng)
+
             val radius = 800.0// 400ｍ
             gMap?.addCircle(
                 CircleOptions()
@@ -257,6 +266,20 @@ class MapFragment : Fragment() {
             }
 
         }
+        if(dateClear){
+            val bounds = LatLngBounds.Builder().also { builder ->
+                latlngLists.forEach {
+                    gMap?.addMarker(MarkerOptions().position(it))?.let { marker ->
+                        markerList.add(
+                            marker
+                        )
+                    }
+                    builder.include(it)
+                }
+            }.build()
+            gMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 300))
+        }
+
     }
 
 
