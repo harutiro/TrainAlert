@@ -21,13 +21,13 @@ import androidx.core.view.size
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -68,6 +68,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
+    val markerList = ArrayList<Marker>()
 
     lateinit var mAdView : AdView
 
@@ -512,12 +513,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             i.remove()
         }
         polyLineList.clear()
+        for (i in markerList) {
+            i.remove()
+        }
+        markerList.clear()
 
 //        円や線の追加
+        val latlngLists = mutableListOf<LatLng>()
         for ((index, j) in sortedRouteLists.withIndex()) {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            latlngLists.add(latLng)
+
             val radius = 800.0// 400ｍ
             circlesList.add(
                 googleMap.addCircle(
@@ -555,6 +563,23 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         }
+
+//          ルートの範囲でカメラを広げてくれる部分
+        if(latlngLists.size != 0){
+            val bounds = LatLngBounds.Builder().also { builder ->
+                latlngLists.forEach {
+                    googleMap.addMarker(MarkerOptions().position(it))?.let { marker ->
+                        markerList.add(
+                            marker
+                        )
+                    }
+                    builder.include(it)
+                }
+            }.build()
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 300))
+        }
+
+
     }
 
 
@@ -635,13 +660,17 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-
-//        初期のルートの線や円リストの追加
-        val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
-        if (!id.isNullOrEmpty()) {
-            routeLists.addAll(realmResalt?.routeList!!)
-            routeAdd()
+//          マップが読み込まれてから動作する部分
+        googleMap.setOnMapLoadedCallback{
+            //        初期のルートの線や円リストの追加
+            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+            if (!id.isNullOrEmpty()) {
+                routeLists.addAll(realmResalt?.routeList!!)
+                routeAdd()
+            }
         }
+
+
 
     }
 
