@@ -209,6 +209,33 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //        }
 
 
+//        現在地ボタンの動作
+
+        findViewById<ImageButton>(R.id.editLocationButton).setOnClickListener {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermission()
+                return@setOnClickListener
+            }
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
+
+//                        カメラ移動
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
+        }
+
+
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
         findViewById<FloatingActionButton>(R.id.editSaveFab).setOnClickListener {
 
@@ -593,6 +620,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             //          自分の位置の表示
             googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
 
             //                現在地の表示
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
