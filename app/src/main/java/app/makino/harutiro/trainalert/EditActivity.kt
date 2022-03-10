@@ -20,10 +20,14 @@ import androidx.core.view.iterator
 import androidx.core.view.size
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -64,11 +68,21 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
     //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
+    val markerList = ArrayList<Marker>()
+
+    lateinit var mAdView : AdView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+
+//        admob
+        MobileAds.initialize(this) {}
+
+        mAdView = findViewById(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
 //        ツールバーの編集
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -194,6 +208,33 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 //
 //
 //        }
+
+
+//        現在地ボタンの動作
+
+        findViewById<ImageButton>(R.id.editLocationButton).setOnClickListener {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermission()
+                return@setOnClickListener
+            }
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
+
+//                        カメラ移動
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
+        }
 
 
 //        ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝セーブ部分
@@ -472,12 +513,19 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             i.remove()
         }
         polyLineList.clear()
+        for (i in markerList) {
+            i.remove()
+        }
+        markerList.clear()
 
 //        円や線の追加
+        val latlngLists = mutableListOf<LatLng>()
         for ((index, j) in sortedRouteLists.withIndex()) {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            latlngLists.add(latLng)
+
             val radius = 800.0// 400ｍ
             circlesList.add(
                 googleMap.addCircle(
@@ -515,6 +563,23 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         }
+
+//          ルートの範囲でカメラを広げてくれる部分
+        if(latlngLists.size != 0){
+            val bounds = LatLngBounds.Builder().also { builder ->
+                latlngLists.forEach {
+                    googleMap.addMarker(MarkerOptions().position(it))?.let { marker ->
+                        markerList.add(
+                            marker
+                        )
+                    }
+                    builder.include(it)
+                }
+            }.build()
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 300))
+        }
+
+
     }
 
 
@@ -580,6 +645,7 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
 
             //          自分の位置の表示
             googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
 
             //                現在地の表示
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -594,13 +660,17 @@ class EditActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-
-//        初期のルートの線や円リストの追加
-        val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
-        if (!id.isNullOrEmpty()) {
-            routeLists.addAll(realmResalt?.routeList!!)
-            routeAdd()
+//          マップが読み込まれてから動作する部分
+        googleMap.setOnMapLoadedCallback{
+            //        初期のルートの線や円リストの追加
+            val realmResalt = realm.where(RouteDateClass::class.java).equalTo("id", id).findFirst()
+            if (!id.isNullOrEmpty()) {
+                routeLists.addAll(realmResalt?.routeList!!)
+                routeAdd()
+            }
         }
+
+
 
     }
 

@@ -11,7 +11,7 @@
 
 
 <!--    </PreferenceCategory>-->
-    <PreferenceCategory app:title="サービスの開始">
+    <PreferenceCategory app:title="サービスの設定">
 
         <Preference
             app:key="signature"
@@ -20,7 +20,17 @@
             app:useSimpleSummaryProvider="true">
             <intent
                 android:targetPackage="app.makino.harutiro.trainalert"
-                android:targetClass="app.makino.harutiro.trainalert.MainActivity2"/>
+                android:targetClass="app.makino.harutiro.trainalert.OpenLocationServiceActivity"/>
+
+        </Preference>
+        <Preference
+            app:key="signature"
+            app:title="位置情報の取得をやめます。"
+            app:summary="終了"
+            app:useSimpleSummaryProvider="true">
+            <intent
+                android:targetPackage="app.makino.harutiro.trainalert"
+                android:targetClass="app.makino.harutiro.trainalert.StopLocationServiceActivity"/>
 
         </Preference>
 

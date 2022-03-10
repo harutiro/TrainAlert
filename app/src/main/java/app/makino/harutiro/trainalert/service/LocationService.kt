@@ -146,7 +146,7 @@ class LocationService : Service() {
             override fun onLocationResult(p0: LocationResult) {
                 p0 ?: return
                 for (location in p0.locations){
-                    updatedCount++
+//                    updatedCount++
                     Log.d("debag3", "[${updatedCount}] ${location.latitude} , ${location.longitude}")
                     val sdfTime = SimpleDateFormat("HH:mm", Locale.JAPAN)
                     val sdfWeek = SimpleDateFormat("EEEE", Locale.US)

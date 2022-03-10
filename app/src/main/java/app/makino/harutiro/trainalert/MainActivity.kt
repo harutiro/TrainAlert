@@ -1,6 +1,7 @@
 package app.makino.harutiro.trainalert
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -9,16 +10,18 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.AppLaunchChecker
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import app.makino.harutiro.trainalert.databinding.ActivityMainBinding
 import app.makino.harutiro.trainalert.service.LocationService
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,8 +55,27 @@ class MainActivity : AppCompatActivity() {
 
 
 //        ForgraundService
-        requestPermission()
-        createNotificationChannel()
+
+        if(AppLaunchChecker.hasStartedFromLauncher(this)){
+            Log.d("AppLaunchChecker","2回目以降");
+        } else {
+            AppLaunchChecker.onActivityCreate(this);
+            AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                .setTitle("位置情報の取り扱い")
+                .setMessage("このアプリでは位置情報によるアラート機能を可能にするために、現在地のデータが収集されます。\n" +
+                        "アプリを閉じている時や、使用していないときにも収集されます。\n" +
+                        "位置情報は、個人を特定できない統計的な情報として、\n" +
+                        "お知らせの配信、位置情報の利用を許可しない場合は、\n" +
+                        "この後表示されるダイアログで「許可しない」を選択してください。")
+                .setPositiveButton("OK") { dialog, which ->
+                    requestPermission()
+                }
+                .show()
+            createNotificationChannel()
+        }
+
+
+
 
         val intent = Intent(this, LocationService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -109,6 +131,37 @@ class MainActivity : AppCompatActivity() {
             }
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.lastIndex <= 0) {
+            return
+        }
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE -> {
+                run {
+                    if (grantResults[0] === PackageManager.PERMISSION_GRANTED) {
+                        /// 許可が取れた場合・・・
+                        /// 必要な処理を書いておく
+                        val intent = Intent(this,OpenLocationServiceActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        /// 許可が取れなかった場合・・・
+                        AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                            .setTitle("位置情報の許可がされませんでした。")
+                            .setMessage("今後、位置情報の許可をする場合、アプリを入れ直すか、本体設定からパーミッションの設定に入り、位置情報の許可をお願いします。")
+                            .setPositiveButton("OK") { dialog, which ->
+                            }
+                            .show()
+                    }
+                }
+            }
         }
     }
 }

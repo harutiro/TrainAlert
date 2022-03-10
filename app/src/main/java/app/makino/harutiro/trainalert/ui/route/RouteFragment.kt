@@ -11,6 +11,9 @@ import app.makino.harutiro.trainalert.EditActivity
 import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.RouteRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import io.realm.Realm
@@ -29,8 +32,17 @@ class RouteFragment : Fragment(R.layout.fragment_route) {
         adapter?.setList(realm.where(RouteDateClass::class.java).findAll())
     }
 
+    lateinit var mAdView : AdView
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //        admob
+        MobileAds.initialize(requireContext()) {}
+
+        mAdView = view.findViewById(R.id.flagmentRouteAdView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
 
 //        view.findViewById<Switch>(R.id.switch2).thumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.true_bell, null)
         view.findViewById<FloatingActionButton>(R.id.fragmentRouteAddFAB).setOnClickListener {

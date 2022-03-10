@@ -21,6 +21,7 @@
         app:srcCompat="@android:drawable/ic_menu_save" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
@@ -31,9 +32,40 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:context=".EditActivity"
             tools:layout_editor_absoluteX="-16dp"
-            tools:layout_editor_absoluteY="-150dp"
-            tools:context=".EditActivity"/>
+            tools:layout_editor_absoluteY="-150dp" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-4077124098444914/5123697533"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
+
+        <ImageButton
+            android:id="@+id/editLocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shape_4x_rounded_corners_40dp"
+            android:backgroundTint="#C8FFFFFF"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_mylocation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/adView"
+            tools:ignore="SpeakableTextPresentCheck" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

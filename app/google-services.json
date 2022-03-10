@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "238216513357",
+    "project_id": "trainalert",
+    "storage_bucket": "trainalert.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238216513357:android:f5a4985b49fe74f6f5d904",
+        "android_client_info": {
+          "package_name": "app.makino.harutiro.trainalert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "238216513357-kvrfbbmp1g8iougcr73to8cp9du9ar48.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.makino.harutiro.trainalert",
+            "certificate_hash": "a37ea9fe3324888a6aea2c5d649e9758d4a9077f"
+          }
+        },
+        {
+          "client_id": "238216513357-ku56erfah14483s0bj6u78l1dujq6g4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbnAj8bhSfWi4vuDTZa--6OnnFk7VUm7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "238216513357-ku56erfah14483s0bj6u78l1dujq6g4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

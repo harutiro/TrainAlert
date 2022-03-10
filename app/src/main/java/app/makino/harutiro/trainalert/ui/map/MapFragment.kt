@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,6 +23,9 @@ import app.makino.harutiro.trainalert.R
 import app.makino.harutiro.trainalert.adapter.MapFragmentRecycleViewAdapter
 import app.makino.harutiro.trainalert.dateBase.RouteDateClass
 import app.makino.harutiro.trainalert.dateBase.RouteListDateClass
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -51,6 +55,9 @@ class MapFragment : Fragment() {
     //    マップの丸や円を消去するために残しておくリスト
     val circlesList = ArrayList<Circle>()
     val polyLineList = ArrayList<Polyline>()
+    val markerList = ArrayList<Marker>()
+
+    lateinit var mAdView : AdView
 
 
 
@@ -60,11 +67,12 @@ class MapFragment : Fragment() {
 
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
-        //        ツールバーの表示
-        googleMap.uiSettings.isMapToolbarEnabled = true
 
         if(requestPermission()){
+
+
             googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = false
 
             //                現在地の表示
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -77,6 +85,7 @@ class MapFragment : Fragment() {
                 val osakaStation = LatLng(location!!.latitude, location.longitude)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
             }
+
         }
 
 
@@ -110,11 +119,46 @@ class MapFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
+        //        admob
+        MobileAds.initialize(requireContext()) {}
+
+        mAdView = view.findViewById(R.id.flagmentMapAdView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
+
+//        位置情報ボタン
+        view.findViewById<ImageButton>(R.id.mapFragmentLocationButton).setOnClickListener{
+
+
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermission()
+                return@setOnClickListener
+            }
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                // Got last known location. In some rare situations this can be null.
+                Log.d("debag", "緯度:" + location?.latitude.toString())
+                Log.d("debag", "経度:" + location?.longitude.toString())
+
+//                        カメラ移動
+                val osakaStation = LatLng(location!!.latitude, location.longitude)
+                gMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(osakaStation, 15.0f))
+            }
+        }
+
 
         //       ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝リサイクラービュー
         val realmResalt = realm.where(RouteDateClass::class.java).findAll()
 
-        val rView = view?.findViewById<RecyclerView>(R.id.mapRouteRV)
+        val rView = view.findViewById<RecyclerView>(R.id.mapRouteRV)
         adapter = MapFragmentRecycleViewAdapter(requireContext(), object: MapFragmentRecycleViewAdapter.OnItemClickListner{
             override fun onItemClick(item: RouteDateClass) {
                 if(item.routeList != null){
@@ -165,14 +209,22 @@ class MapFragment : Fragment() {
                 i.remove()
             }
             polyLineList.clear()
+            for (i in markerList) {
+                i.remove()
+            }
+            markerList.clear()
+
         }
 
 
-//        円や線の追加
+//        円や線の追加 かつ カメラフレームの位置調整
+        val latlngLists = mutableListOf<LatLng>()
         for ((index, j) in sortedRouteLists.withIndex()) {
 
 //            円の追加 設定するときに消すことが出来るようにリストに保存をしておく
             val latLng = LatLng(j.placeLat, j.placeLon) // 場所
+            latlngLists.add(latLng)
+
             val radius = 800.0// 400ｍ
             gMap?.addCircle(
                 CircleOptions()
@@ -214,6 +266,20 @@ class MapFragment : Fragment() {
             }
 
         }
+        if(dateClear){
+            val bounds = LatLngBounds.Builder().also { builder ->
+                latlngLists.forEach {
+                    gMap?.addMarker(MarkerOptions().position(it))?.let { marker ->
+                        markerList.add(
+                            marker
+                        )
+                    }
+                    builder.include(it)
+                }
+            }.build()
+            gMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 300))
+        }
+
     }
 
 
