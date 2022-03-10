@@ -11,6 +11,6 @@ class StopAlertRecever: BroadcastReceiver() {
 
         val manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.cancelAll()
-        Toast.makeText(context, "toastMessage", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "アラームを止めました", Toast.LENGTH_SHORT).show()
     }
 }
