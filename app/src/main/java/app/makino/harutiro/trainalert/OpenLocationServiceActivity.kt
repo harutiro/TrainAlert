@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import app.makino.harutiro.trainalert.service.LocationService
 
 class OpenLocationServiceActivity : AppCompatActivity() {
@@ -20,6 +21,7 @@ class OpenLocationServiceActivity : AppCompatActivity() {
         }else{
             startService(intent)
         }
+        Toast.makeText(this, "位置情報を取得します", Toast.LENGTH_SHORT).show()
         finish()
     }
 }
