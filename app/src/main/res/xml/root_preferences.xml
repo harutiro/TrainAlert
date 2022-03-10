@@ -20,7 +20,7 @@
             app:useSimpleSummaryProvider="true">
             <intent
                 android:targetPackage="app.makino.harutiro.trainalert"
-                android:targetClass="app.makino.harutiro.trainalert.MainActivity2"/>
+                android:targetClass="app.makino.harutiro.trainalert.OpenLocationServiceActivity"/>
 
         </Preference>
 
