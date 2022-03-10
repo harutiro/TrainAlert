@@ -1,6 +1,7 @@
 package app.makino.harutiro.trainalert
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -13,6 +14,7 @@ import android.widget.Button
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.AppLaunchChecker
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -52,8 +54,26 @@ class MainActivity : AppCompatActivity() {
 
 
 //        ForgraundService
-        requestPermission()
-        createNotificationChannel()
+
+        if(AppLaunchChecker.hasStartedFromLauncher(this)){
+            Log.d("AppLaunchChecker","2回目以降");
+        } else {
+            AppLaunchChecker.onActivityCreate(this);
+            AlertDialog.Builder(this) // FragmentではActivityを取得して生成
+                .setTitle("タイトル")
+                .setMessage("このアプリでは位置情報によるアラート機能を可能にするために、現在地のデータが収集されます。\n" +
+                        "アプリを閉じている時や、使用していないときにも収集されます。\n" +
+                        "位置情報は、個人を特定できない統計的な情報として、\n" +
+                        "お知らせの配信、位置情報の利用を許可しない場合は、\n" +
+                        "この後表示されるダイアログで「許可しない」を選択してください。")
+                .setPositiveButton("OK") { dialog, which ->
+                    requestPermission()
+                }
+                .show()
+            createNotificationChannel()
+        }
+
+
 
         val intent = Intent(this, LocationService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
